@@ -2,21 +2,139 @@
 
 ## Hardware
 
-- Proxmox Host
-- Ubuntu Server
+* Proxmox VE
+* Ubuntu Server
+* Debian Workstation
 
-## Projekt 1
+---
 
-Docker Grundlagen
+## Ziel
 
-### Installation
+Aufbau eines Linux- und DevOps-Homelabs zur Vorbereitung auf:
 
-Docker installiert auf Ubuntu
+* Linux Essentials
+* Junior Linux Administrator
+* Junior System Administrator
+* Junior DevOps Engineer
+
+---
+
+## Projekt 1: Docker Grundlagen
+
+### Docker Installation
+
+Docker Engine auf Ubuntu Server installiert.
 
 ### Erstes Image
 
-nginx
+Image heruntergeladen:
 
-### Erster Container
+```bash
+docker pull nginx
+```
 
+### Erstes Container Deployment
+
+```bash
 docker run -d -p 80:80 nginx
+```
+
+### Docker Grundlagen gelernt
+
+* Images anzeigen
+* Container anzeigen
+* Container starten
+* Container stoppen
+* Container löschen
+* Logs anzeigen
+* In Container einloggen
+* Images löschen
+
+Verwendete Befehle:
+
+```bash
+docker images
+docker ps
+docker ps -a
+docker start
+docker stop
+docker logs
+docker exec
+docker rm
+docker rmi
+```
+
+---
+
+## Volume Mounts
+
+Ziel:
+
+HTML-Datei außerhalb des Containers speichern und Änderungen dauerhaft behalten.
+
+Ordner auf Ubuntu erstellt:
+
+```text
+/home/renatubuntu/documentation/Webserver
+```
+
+Datei erstellt:
+
+```text
+index.html
+```
+
+Container mit Volume gestartet:
+
+```bash
+docker run -d \
+--name nginx-web \
+-p 8080:80 \
+-v /home/renatubuntu/documentation/Webserver:/usr/share/nginx/html \
+nginx
+```
+
+Erkenntnis:
+
+Änderungen an der Datei auf dem Ubuntu Host werden sofort im Container sichtbar.
+
+Dadurch bleiben Daten auch nach dem Löschen des Containers erhalten.
+
+---
+
+## Git & GitHub
+
+Git auf Ubuntu eingerichtet.
+
+Erstes Repository erstellt:
+
+```bash
+git init
+```
+
+SSH-Key erzeugt und mit GitHub verbunden.
+
+Erster Push erfolgreich durchgeführt.
+
+Repository:
+
+ProxMox-Infrastructure
+
+Ziel:
+
+* Dokumentation aller Homelab-Projekte
+* Git lernen
+* Versionsverwaltung lernen
+* Portfolio für Bewerbungen aufbauen
+
+---
+
+## Nächste Schritte
+
+* Docker Compose
+* Portainer
+* Git Workflow verbessern
+* Bash Skripting
+* Monitoring mit Zabbix
+* Ansible Grundlagen
+* Linux Essentials Vorbereitung
