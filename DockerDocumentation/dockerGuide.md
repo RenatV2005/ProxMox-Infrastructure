@@ -6,17 +6,13 @@ docker images
 
 docker pull nginx
 
-#  Container starten
+#  Container starten - einen neuen Container aus dem Image erstellen 
 
 docker run nginx
 
 # Container im Hintergrund starten d=detached
 
 docker run -d nginx
-
-# Container mit Namen starten 
-
-docker run -d --name nginx-test nginx
 
 # Port weiterleiten Host 8080-> Container 80
 
@@ -29,10 +25,6 @@ docker ps
 # Alle Container anzeigen
 
 docker ps -a
-
-# Container starten
-
-docker run nginx 
 
 # Logs Anzeigen / Live logs Anzeigen 
 
@@ -65,4 +57,6 @@ docker rmi nginx
 
 docker rename altername neuername
 
-# Volume mount 
+# Vorhanden Container STARTEN / STOPPEN
+
+docker start nginx-web / docker stop nginx-web 

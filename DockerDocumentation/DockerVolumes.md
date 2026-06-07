@@ -23,3 +23,5 @@ docker volume create nginx-data
 # Details im Volume anschauen 
 
 docker volume inspect nginx-data 
+
+

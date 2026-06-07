@@ -172,3 +172,14 @@ docker run -d \
 nginx
 
 # Dadurch kann ich den config und die index.html ohne den Container login verändern 
+
+## Docker Network erstellen
+
+docker network create homelab-net
+docker network ls
+docker network inspect homelab-net
+
+# Network überprüfen
+
+ip a | grep docker
+
