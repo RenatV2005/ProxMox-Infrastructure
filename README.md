@@ -139,30 +139,38 @@ Ziel:
 * Ansible Grundlagen
 * Linux Essentials Vorbereitung
 
+---
 
-## 07.06.2026
-* Volumen und deren Bedeutung 
+
+# 07.06.2026
+
+## Volumen und deren Bedeutung 
 
 * Volume sind wichtig, da diese Anwendungen Daten speicheren 
 * Grafana: Dashboards,  Benutzer, Passwörter, Datasources
 * MariaDB: Datenbanken, Tabellen, Benutzerdaten
 * Zabbix: Hosts, Triggers, Alarme, Monitoringdaten
-
+ 
 * Wenn diese im Container liegen: Container gelöscht = Daten Weg
 
 * Deswegen immer die Regel: Container = Anwendung; Volume = Daten 
 
 * danach habe ich meinen ersten Volume erstellt mit 
 
+```bash
 docker volume create nginx-data 
+```
 
 *  Docker Volume für nginx Config erstellt mit 
 
+```bash
 docker cp nginx-web:/etc/nginx/conf.d/default.conf \
 /home/renatubuntu/documentation/nginx-config/default.conf
+```
 
 * nun habe ich einen neuen Nginx Cotainer erstellt mit 2 Volumes 
 
+```bash
 docker run -d \
 --name nginx-web \
 -p 8080:80 \
@@ -170,6 +178,7 @@ docker run -d \
 -v /home/renatubuntu/documentation/nginx-config/default.conf:/etc/nginx/conf.d/default.conf \
 --restart unless-stopped \
 nginx
+```
 
 * Dadurch kann ich den config und die index.html ohne den Container login verändern 
 
@@ -180,6 +189,30 @@ docker network ls
 docker network inspect homelab-net
 
 * Network überprüfen
-
+```bash
 ip a | grep docker
+```
+
+# 08.06.26
+
+## Compose erstellen
+
+- compose.yaml erstellt 
+- Compose war noch auf dem Server nicht installiert, da bei "docker compose version" kein Ergebniss kam
+- mit "docker version" die Version von docker überprüft  29.1.3 - somit war der Client und der Server auf der gleichen Version
+- mit "which docker" den Speicher ort überprüft = /usr/bin/docker
+- dazu noch die Server Version überprüft mit "cat /etc/os-release" = Ubuntu 26.04 LTS
+dpkg -l | grep docker
+- dpkg = Debian Package Manager
+-l = list
+* = ist das Packet überhaupt installiert? 
+
+apt list --installed | grep docker
+* = Zeige installierte Packete 
+
+* mit "apt search docker* den Packet suchen, mit "apt search docker | grep compose" das gewünschte Packet suchen
+* mit "apt show docker-compose-v2" das Packet untersuchen
+* Welche Repository = "apt policy docker-compose-v2"
+
+
 

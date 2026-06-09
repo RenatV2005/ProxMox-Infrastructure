@@ -28,3 +28,5 @@ docker run -d \
 -v /home/renatubuntu/documentation/nginx-config/default.conf:/etc/nginx/conf.d/default.conf \
 --restart unless-stopped \
 nginx
+
+---
