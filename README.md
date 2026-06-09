@@ -141,27 +141,27 @@ Ziel:
 
 
 ## 07.06.2026
-# Volumen und deren Bedeutung 
+* Volumen und deren Bedeutung 
 
-# Volume sind wichtig, da diese Anwendungen Daten speicheren 
-# Grafana: Dashboards,  Benutzer, Passwörter, Datasources
-# MariaDB: Datenbanken, Tabellen, Benutzerdaten
-# Zabbix: Hosts, Triggers, Alarme, Monitoringdaten
+* Volume sind wichtig, da diese Anwendungen Daten speicheren 
+* Grafana: Dashboards,  Benutzer, Passwörter, Datasources
+* MariaDB: Datenbanken, Tabellen, Benutzerdaten
+* Zabbix: Hosts, Triggers, Alarme, Monitoringdaten
 
-# Wenn diese im Container liegen: Container gelöscht = Daten Weg
+* Wenn diese im Container liegen: Container gelöscht = Daten Weg
 
-# Deswegen immer die Regel: Container = Anwendung; Volume = Daten 
+* Deswegen immer die Regel: Container = Anwendung; Volume = Daten 
 
-# - danach habe ich meinen ersten Volume erstellt mit 
+* danach habe ich meinen ersten Volume erstellt mit 
 
 docker volume create nginx-data 
 
-#  Docker Volume für nginx Config erstellt mit 
+*  Docker Volume für nginx Config erstellt mit 
 
 docker cp nginx-web:/etc/nginx/conf.d/default.conf \
 /home/renatubuntu/documentation/nginx-config/default.conf
 
-# nun habe ich einen neuen Nginx Cotainer erstellt mit 2 Volumes 
+* nun habe ich einen neuen Nginx Cotainer erstellt mit 2 Volumes 
 
 docker run -d \
 --name nginx-web \
@@ -171,15 +171,15 @@ docker run -d \
 --restart unless-stopped \
 nginx
 
-# Dadurch kann ich den config und die index.html ohne den Container login verändern 
+* Dadurch kann ich den config und die index.html ohne den Container login verändern 
 
-## Docker Network erstellen
+* Docker Network erstellen
 
 docker network create homelab-net
 docker network ls
 docker network inspect homelab-net
 
-# Network überprüfen
+* Network überprüfen
 
 ip a | grep docker
 
