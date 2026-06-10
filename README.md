@@ -213,6 +213,41 @@ apt list --installed | grep docker
 * mit "apt search docker* den Packet suchen, mit "apt search docker | grep compose" das gewünschte Packet suchen
 * mit "apt show docker-compose-v2" das Packet untersuchen
 * Welche Repository = "apt policy docker-compose-v2"
+---
 
+# 10.06.26
+
+## ersten Compose erstellt
+
+```bash
+renatubuntu@ubuntumainserver:~/documentation/docker-compose$ docker compose config
+name: docker-compose
+services:
+  nginx-webserver:
+    image: nginx
+    networks:
+      homelab-net: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "8080"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /home/renatubuntu/documentation/Webserver
+        target: /usr/share/nginx/html
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/renatubuntu/documentation/nginx-config/default.conf
+        target: /etc/nginx/conf.d/default.conf
+        bind:
+          create_host_path: true
+networks:
+  homelab-net:
+    name: docker-compose_homelab-net
+renatubuntu@ubuntumainserver:~/documentation/docker-compose$
+```
 
 
