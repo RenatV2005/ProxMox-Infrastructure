@@ -18,7 +18,7 @@ sudo docker run -d -p 80:80 nginx
 
 sudo docker ps
 
-## 07.06.26
+# 07.06.26
 
 docker run -d \
 --name nginx-web \
@@ -30,3 +30,17 @@ docker run -d \
 nginx
 
 ---
+# 10.06.26
+
+## Docker Network untersuchen
+
+docker inspect docker-compose-nginx-webserver-1
+
+* Image aus dem Dockerhub prüfen mit:
+docker search apache2
+
+* lokale images prüfen mit
+docker images
+
+* Image Details anschauen
+docker inspect nginx
