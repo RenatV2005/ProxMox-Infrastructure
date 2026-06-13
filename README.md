@@ -250,4 +250,62 @@ networks:
 renatubuntu@ubuntumainserver:~/documentation/docker-compose$
 ```
 
+# 11.06.26
 
+## Pakete Untersuchen
+
+docker version
+cat /etc/os-release
+which docker
+apt search docker
+apt policy docker-compose-v2
+dpkg -l | grep docker
+
+apt show docker.io
+dpkg -l 
+apt list --installed 
+
+* Binary finden
+which docker
+
+* Packet deinstallieren 
+sudo apt remove nginx 
+
+---
+
+## Reverse Proxy
+
+* zuerst habe ich meinen Compose auf einen weiteren Nginx Container erweitert und habe dort die Configs überprüft mit :
+docker exec -it docker-compose-nginx-webserver-1 sh
+cat /etc/resolv.conf
+cat /etc/hosts
+
+* im Volume wo der Config von nginx-web-1 liegt, habe ich zuerst den Config umgebaut auf :
+location /test {
+    proxy_pass http://nginx-test;
+}
+* danach mit dem Bash Befehl, den Config getestet:
+docker exec -it docker-compose-nginx-webserver-1 nginx -t
+
+# 13.06.26
+
+## Grafana
+
+* zuerst habe ich nachgeschaut aus dem DockerHub ob ein offizielles grafana image existiert mit 
+docker search grafana 
+* danach habe ich den Image grafana/grafana mit "docker pull grafana/grafana" installiert
+* danach habe ich einen Bind Mount erstellt, aber habe dann mit "docker inspect grafana/grafana" entdeckt das dort Grafana als User 472 ausgeführt wird, danach habe ich die Berechtigungen angepasst mit "sudo chown -R 472:472 /home/renatubuntu/documentation/grafanafiles"
+* danach habe ich den compose angepasst 
+  grafana-web:
+    image: grafana/grafana
+    networks:
+     - homelab-net
+    ports:
+     - 3000:3000
+    volumes:
+     - /home/renatubuntu/documentation/grafanafiles:/var/lib/grafana
+    restart: unless-stopped
+
+networks:
+  homelab-net:
+* den Compose habe ich selber erstellt und angepasst ohne Hilfsmittel 
