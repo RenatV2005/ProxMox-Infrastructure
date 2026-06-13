@@ -287,25 +287,100 @@ location /test {
 * danach mit dem Bash Befehl, den Config getestet:
 docker exec -it docker-compose-nginx-webserver-1 nginx -t
 
-# 13.06.26
+# 13.06.2026
 
-## Grafana
+## Grafana Deployment mit Docker Compose
 
-* zuerst habe ich nachgeschaut aus dem DockerHub ob ein offizielles grafana image existiert mit 
-docker search grafana 
-* danach habe ich den Image grafana/grafana mit "docker pull grafana/grafana" installiert
-* danach habe ich einen Bind Mount erstellt, aber habe dann mit "docker inspect grafana/grafana" entdeckt das dort Grafana als User 472 ausgeführt wird, danach habe ich die Berechtigungen angepasst mit "sudo chown -R 472:472 /home/renatubuntu/documentation/grafanafiles"
-* danach habe ich den compose angepasst 
-  grafana-web:
-    image: grafana/grafana
-    networks:
-     - homelab-net
-    ports:
-     - 3000:3000
-    volumes:
-     - /home/renatubuntu/documentation/grafanafiles:/var/lib/grafana
-    restart: unless-stopped
+Ziel war es, Grafana als weiteren Service in meine bestehende Docker-Compose-Umgebung zu integrieren.
 
-networks:
-  homelab-net:
-* den Compose habe ich selber erstellt und angepasst ohne Hilfsmittel 
+### Docker Hub Recherche
+
+Zuerst habe ich überprüft, ob ein offizielles Grafana Image existiert:
+
+```bash
+docker search grafana
+```
+
+Danach wurde das offizielle Image verwendet:
+
+```bash
+grafana/grafana
+```
+
+---
+
+### Grafana Service erstellen
+
+Compose erweitert:
+
+```yaml
+grafana-web:
+  image: grafana/grafana
+  networks:
+    - homelab-net
+  ports:
+    - 3000:3000
+  volumes:
+    - /home/renatubuntu/documentation/grafanafiles:/var/lib/grafana
+  restart: unless-stopped
+```
+
+---
+
+### Berechtigungsproblem analysieren
+
+Nach dem ersten Start konnte Grafana nicht schreiben.
+
+Analyse:
+
+```bash
+docker inspect grafana/grafana
+```
+
+Ergebnis:
+
+```text
+User: 472
+```
+
+Dadurch wurde erkannt, dass Grafana nicht als Root läuft.
+
+Anschließend wurden die Besitzrechte angepasst:
+
+```bash
+sudo chown -R 472:472 /home/renatubuntu/documentation/grafanafiles
+```
+
+Danach startete Grafana erfolgreich.
+
+---
+
+### Reverse Proxy Verständnis
+
+Im Nginx Reverse Proxy wurde eine zusätzliche Location erstellt:
+
+```nginx
+location /grafana {
+    proxy_pass http://grafana-web:3000/;
+}
+```
+
+Dabei wurde verstanden:
+
+* grafana-web = Docker DNS Name
+* 3000 = Grafana Port
+* /grafana = URL Pfad des Reverse Proxys
+
+---
+
+### Erkenntnisse
+
+Gelernt:
+
+* Docker DNS zwischen Containern
+* Reverse Proxy Grundlagen
+* Bind Mounts
+* UID/GID Berechtigungen
+* Docker Inspect
+* Docker Compose Erweiterung
+* Persistent Storage für Container
