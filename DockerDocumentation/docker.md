@@ -44,3 +44,6 @@ docker images
 
 * Image Details anschauen
 docker inspect nginx
+
+# 11.06.26
+
