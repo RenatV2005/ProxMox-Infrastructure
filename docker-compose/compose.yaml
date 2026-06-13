@@ -7,15 +7,27 @@ services:
      - 8080:80
     volumes:
      - /home/renatubuntu/documentation/nginx-config/default.conf:/etc/nginx/conf.d/default.conf
+     - /home/renatubuntu/documentation/Webserver:/usr/share/nginx/html
     restart: unless-stopped
 
-  nginx-test:
-    image: nginx
+  grafana-web:
+    image: grafana/grafana
     networks:
      - homelab-net
+    ports:
+     - 3000:3000
     volumes:
-     - /home/renatubuntu/documentation/nginx-config/nginx-test-config.conf:/etc/nginx/conf.d/default.conf
-     - /home/renatubuntu/documentation/Webserver:/usr/share/nginx/html
+     - /home/renatubuntu/documentation/grafanafiles:/var/lib/grafana
+    restart: unless-stopped
+
+  prometheus-data:
+    image: prom/prometheus
+    networks:
+     - homelab-net
+    ports:
+     - 9090:9090
+    volumes:
+     - /home/renatubuntu/documentation/prometheus-data:/prometheus
     restart: unless-stopped
 
 networks:
