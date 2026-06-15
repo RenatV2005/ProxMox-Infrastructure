@@ -384,3 +384,207 @@ Gelernt:
 * Docker Inspect
 * Docker Compose Erweiterung
 * Persistent Storage für Container
+
+# 14.06.26
+
+# Homelab Progress Report – Docker, Prometheus, Grafana & Reverse Proxy
+
+## Ziel
+
+Aufbau einer Linux-basierten Monitoring- und Webserver-Umgebung mit Docker Compose, Prometheus, Grafana und Nginx.
+
+---
+
+## Docker Monitoring Stack
+
+### Komponenten
+
+* Prometheus
+* Grafana
+* Node Exporter
+
+### Architektur
+
+Ubuntu Server
+↓
+Docker
+↓
+Prometheus
+↓
+Node Exporter
+↓
+Grafana
+
+### Erkenntnisse
+
+#### Node Exporter
+
+Node Exporter sammelt Linux-Systemmetriken.
+
+Beispiele:
+
+* CPU Nutzung
+* RAM Nutzung
+* Dateisysteme
+* Load Average
+* Netzwerkstatistiken
+
+Prometheus speichert diese Daten als Time Series.
+
+Grafana visualisiert die Daten.
+
+---
+
+## Prometheus Konfiguration
+
+Datei:
+
+```yaml
+prometheus.yml
+```
+
+Konfiguration eines Scrape Targets:
+
+```yaml
+scrape_configs:
+  - job_name: "prometheus"
+
+    static_configs:
+      - targets:
+        - node-exporter:9100
+```
+
+Wichtige Erkenntnis:
+
+Container im selben Docker Network können sich direkt über ihren Containernamen erreichen.
+
+Kein IP-Management notwendig.
+
+---
+
+## Grafana
+
+### Einrichtung
+
+Login:
+
+admin
+admin
+
+Beim ersten Login Passwort ändern.
+
+### Data Source
+
+Prometheus wurde als Data Source eingebunden.
+
+URL:
+
+http://prometheus:9090
+
+### Dashboard
+
+Importiertes Node Exporter Dashboard.
+
+Sichtbare Kennzahlen:
+
+* CPU Busy
+* Memory Used
+* Filesystem Usage
+* Load Average
+* Network Traffic
+
+---
+
+## Docker Compose Grundlagen
+
+Gelernt:
+
+* image
+* container
+* ports
+* volumes
+* networks
+* restart policies
+
+Beispiel:
+
+```yaml
+volumes:
+  - ./nginx-files:/usr/share/nginx/html
+```
+
+Bind Mount verbindet Host-Dateien mit dem Container.
+
+---
+
+## Reverse Proxy Projekt
+
+### Ziel
+
+Nur ein öffentlich erreichbarer Container.
+
+Architektur:
+
+Internet
+↓
+Nginx Proxy
+↓
+Nginx App
+
+### Docker DNS Test
+
+Befehl:
+
+```bash
+docker exec -it projeckt-webserver-nginx-proxy-1 getent hosts nginx-app
+```
+
+Ergebnis:
+
+```bash
+172.19.0.3 nginx-app
+```
+
+Docker DNS funktioniert.
+
+### HTTP Test
+
+Befehl:
+
+```bash
+curl http://nginx-app
+```
+
+Ergebnis:
+
+Die Webseite wurde erfolgreich ausgeliefert.
+
+Der Reverse Proxy kann den Backend-Webserver erreichen.
+
+---
+
+## Wichtige Linux Befehle
+
+```bash
+docker ps
+docker logs
+docker inspect
+docker exec -it
+curl
+getent hosts
+```
+
+---
+
+## Nächste Schritte
+
+* Reverse Proxy vollständig fertigstellen
+* Grafana hinter Nginx veröffentlichen
+* Prometheus hinter Nginx veröffentlichen
+* HTTPS mit Let's Encrypt
+* UFW Firewall
+* SSH Hardening
+* Git Repository
+* CI/CD Grundlagen
+* Docker Monitoring erweitern
+* Linux Sysadmin Skills vertiefen

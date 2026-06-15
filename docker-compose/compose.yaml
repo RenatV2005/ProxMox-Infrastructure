@@ -28,6 +28,15 @@ services:
      - 9090:9090
     volumes:
      - /home/renatubuntu/documentation/prometheus-data:/prometheus
+     - /home/renatubuntu/documentation/prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter
+    networks:
+     - homelab-net
+    ports:
+     - 9100:9100
     restart: unless-stopped
 
 networks:
