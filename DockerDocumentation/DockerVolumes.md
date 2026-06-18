@@ -24,4 +24,3 @@ docker volume create nginx-data
 
 docker volume inspect nginx-data 
 
-
