@@ -53,20 +53,27 @@ services:
     restart: unless-stopped
 
   cadvisor:
-    image: google/cadvisor
+    image: gcr.io/cadvisor/cadvisor
 
-    ports:
-      - 8080:8080
+    privileged: true
+
+    devices:
+      - /dev/kmsg
 
     volumes:
       - /:/rootfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk:/dev/disk:ro
+
+    ports:
+      - "8080:8080"
+
+    restart: unless-stopped
 
     networks:
       - homelab-net
-
-    restart: unless-stopped
+   
 networks:
   homelab-net:

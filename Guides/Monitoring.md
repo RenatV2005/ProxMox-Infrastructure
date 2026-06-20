@@ -428,3 +428,9 @@ Dann analysieren.
 
 ps aux --sort=-%cpu | head
 - Top CPU Prozesse 
+
+docker logs docker-compose-cadvisor-1 | grep -A 10 cpu
+- zeige 10 Logs nach dem Wort Cpu
+
+stat -fc %T /sys/fs/cgroup
+- Zeige mir den Typ des Dateisystems, welches hinter /sys/fs/cgroup liegt

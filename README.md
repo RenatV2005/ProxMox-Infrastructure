@@ -619,4 +619,67 @@ Passende Nginx-Konfiguration wieder eingebunden.
 cat /proc/stat
 cat /proc/meminfo
 
-* neuen Image installiert für google cAdvisor
+# Homelab Update - cAdvisor Integration
+
+## Ziel
+
+Heute habe ich cAdvisor in meinen Monitoring-Stack integriert, um zusätzlich zu Node Exporter auch Docker Container überwachen zu können.
+
+## Bereits vorhandener Stack
+
+- Prometheus
+- Grafana
+- Node Exporter
+- Nginx
+
+## Vorgehen
+
+Zunächst lief cAdvisor nicht korrekt und meldete Fehler bezüglich CPU Mountpoints.
+
+Nach Analyse der Logs und der offiziellen GitHub-Dokumentation wurde festgestellt, dass die empfohlene Container-Konfiguration zusätzliche Volumes und Berechtigungen benötigt.
+
+Anstatt lange zu experimentieren, wurde die offizielle cAdvisor-Konfiguration aus der Dokumentation übernommen und an Docker Compose angepasst.
+
+## Prometheus Integration
+
+Anschließend wurde Prometheus erweitert:
+
+```yaml
+- job_name: "cadvisor"
+
+  static_configs:
+    - targets: ["cadvisor:8080"]
+```
+
+Danach konnte überprüft werden, dass Prometheus sowohl Node Exporter als auch cAdvisor erfolgreich scraped.
+
+## Verifikation
+
+Kontrolliert mit:
+
+```bash
+docker ps
+docker logs
+curl http://localhost:9090/api/v1/targets
+```
+
+Ergebnis:
+
+- node-exporter = UP
+- cadvisor = UP
+- Prometheus = UP
+- Grafana = UP
+
+## Erkenntnisse
+
+- Offizielle Dokumentationen zuerst lesen spart viel Zeit.
+- Docker DNS macht die Kommunikation zwischen Containern sehr einfach.
+- Ein einzelner Prometheus Server kann problemlos mehrere Exporter gleichzeitig überwachen.
+- cAdvisor ergänzt Node Exporter perfekt, da nun auch Container-spezifische Metriken verfügbar sind.
+
+## Nächste Schritte
+
+- Grafana Dashboard für cAdvisor erstellen
+- Container CPU-Auslastung visualisieren
+- Container RAM-Verbrauch visualisieren
+- Alerts für hohe Ressourcenauslastung vorbereiten

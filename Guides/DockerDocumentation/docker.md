@@ -47,4 +47,3 @@ docker inspect nginx
 
 # 11.06.26
 
-docker system df
