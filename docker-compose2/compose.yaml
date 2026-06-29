@@ -1,0 +1,13 @@
+services:
+
+  nginx-proxy:
+    image: nginx
+    ports:
+     - 80:80
+    volumes:
+     - /home/renatubuntu/documentation/docker-compose2/nginx-conf/true.conf:/etc/nginx/conf.d/default.conf
+
+  nginx-app:
+   image: nginx
+   volumes: 
+    - /home/renatubuntu/documentation/docker-compose2/nginx-files/:/usr/share/nginx/html
