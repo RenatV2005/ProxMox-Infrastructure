@@ -1,13 +1,39 @@
 services:
-
-  nginx-proxy:
-    image: nginx
+  mariadb-datenbank:
+    image: mariadb
+    environment:
+     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+     MARIADB_DATABASE: ${MARIADB_DATABASE}
+     MARIADB_USER: ${MARIADB_USER}
+     MARIADB_PASSWORD: ${MARIADB_PASSWORD}
     ports:
-     - 80:80
+     - "3306:3306"
     volumes:
-     - /home/renatubuntu/documentation/docker-compose2/nginx-conf/true.conf:/etc/nginx/conf.d/default.conf
+     - /home/renatubuntu/documentation/docker-compose2/bookstack-mariadb:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+     - homelab-net
 
-  nginx-app:
-   image: nginx
-   volumes: 
-    - /home/renatubuntu/documentation/docker-compose2/nginx-files/:/usr/share/nginx/html
+  bookstack-app:
+   image: linuxserver/bookstack
+   environment:
+    APP_URL: ${APP_URL}
+    APP_KEY: ${APP_KEY}
+    DB_HOST: ${DB_HOST}
+    DB_DATABASE: ${DB_DATABASE}
+    DB_USERNAME: ${DB_USERNAME}
+    DB_PASSWORD: ${DB_PASSWORD}
+    DB_PORT: ${DB_PORT}
+   ports:
+    - "6875:80"
+   volumes:
+    - /home/renatubuntu/documentation/docker-compose2/bookstack-app:/config
+   restart: unless-stopped
+   networks:
+    - homelab-net
+    - reverse-proxy-net
+
+networks:
+  homelab-net:
+  reverse-proxy-net:
+    external: true    

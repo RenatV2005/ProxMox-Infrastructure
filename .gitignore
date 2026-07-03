@@ -1,2 +1,8 @@
 grafanafiles/
 prometheus-data/
+docker-compose2/.env
+docker-compose3/.env
+docker-compose2/bookstack-mariadb/
+docker-compose2/bookstack-app/
+docker-compose3/gitea-daten/
+docker-compose3/postgres-daten/

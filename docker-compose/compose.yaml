@@ -3,6 +3,7 @@ services:
     image: nginx
     networks:
      - homelab-net
+     - reverse-proxy-net
     ports:
      - 80:80
     volumes:
@@ -77,3 +78,5 @@ services:
    
 networks:
   homelab-net:
+  reverse-proxy-net:
+    external: true
