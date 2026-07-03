@@ -7,3 +7,4 @@ docker-compose2/bookstack-app/
 docker-compose3/gitea-daten/
 docker-compose3/postgres-daten/
 LogIn.txt
+.gitignore
