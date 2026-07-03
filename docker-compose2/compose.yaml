@@ -2,10 +2,10 @@ services:
   mariadb-datenbank:
     image: mariadb
     environment:
-     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-     MARIADB_DATABASE: ${MARIADB_DATABASE}
-     MARIADB_USER: ${MARIADB_USER}
-     MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+     -  MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+     -  MARIADB_DATABASE=${MARIADB_DATABASE}
+     -  MARIADB_USER=${MARIADB_USER}
+     -  MARIADB_PASSWORD=${MARIADB_PASSWORD}
     ports:
      - "3306:3306"
     volumes:
@@ -16,14 +16,14 @@ services:
 
   bookstack-app:
    image: linuxserver/bookstack
-   environment:
-    APP_URL: ${APP_URL}
-    APP_KEY: ${APP_KEY}
-    DB_HOST: ${DB_HOST}
-    DB_DATABASE: ${DB_DATABASE}
-    DB_USERNAME: ${DB_USERNAME}
-    DB_PASSWORD: ${DB_PASSWORD}
-    DB_PORT: ${DB_PORT}
+   environment: 
+    -  APP_URL=${APP_URL}
+    -  APP_KEY=${APP_KEY}
+    - DB_HOST=${DB_HOST}
+    - DB_DATABASE=${DB_DATABASE}
+    - DB_USER=${DB_USER}
+    - DB_PASS=${DB_PASS}
+    - DB_PORT=${DB_PORT}
    ports:
     - "6875:80"
    volumes:
