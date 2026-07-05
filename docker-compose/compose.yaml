@@ -1,20 +1,9 @@
 services: 
-  nginx-webserver:
-    image: nginx
-    networks:
-     - homelab-net
-     - reverse-proxy-net
-    ports:
-     - 80:80
-    volumes:
-     - /home/renatubuntu/documentation/nginx-config/default.conf:/etc/nginx/conf.d/default.conf
-     - /home/renatubuntu/documentation/Webserver:/usr/share/nginx/html
-    restart: unless-stopped
-
   grafana-web:
     image: grafana/grafana
     networks:
      - homelab-net
+     - reverse-proxy-net
     ports:
      - 3000:3000
     volumes:
@@ -75,6 +64,7 @@ services:
 
     networks:
       - homelab-net
+      - reverse-proxy-net
    
 networks:
   homelab-net:
