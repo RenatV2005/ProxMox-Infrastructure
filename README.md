@@ -683,3 +683,525 @@ Ergebnis:
 - Container CPU-Auslastung visualisieren
 - Container RAM-Verbrauch visualisieren
 - Alerts für hohe Ressourcenauslastung vorbereiten
+
+# BookStack + MariaDB Homelab Stack 03.07.26
+
+## Overview
+
+This project deploys a self-hosted documentation platform using:
+
+- BookStack
+- MariaDB
+- Docker Compose
+- Bind Mount Volumes
+- Environment Variables (.env)
+
+The stack is designed as an enterprise-style learning project to improve:
+
+- Docker Compose
+- Persistent Storage
+- Environment Variable Management
+- Container Networking
+- Service Discovery via Docker DNS
+- Troubleshooting and Log Analysis
+
+---
+
+## Architecture
+
+Browser
+↓
+BookStack Container
+↓
+Docker Network
+↓
+MariaDB Container
+↓
+Persistent Bind Mount Storage
+
+---
+
+## Technologies
+
+- Docker
+- Docker Compose
+- MariaDB
+- BookStack
+- Linux
+- Bind Mounts
+- Docker Networks
+- Environment Variables
+
+---
+
+## Volumes
+
+### BookStack Application Data
+
+```text
+./bookstack-app -> /config
+
+# Homelab Fortschritt - Docker / Git / Selfhosting Session
+
+## Infrastruktur Status
+
+Aktuell laufen dauerhaft auf meinem Ubuntu Server:
+
+- Nginx Webserver
+- Prometheus
+- Grafana
+- cAdvisor
+- Node Exporter
+- BookStack + MariaDB
+- Gitea + PostgreSQL
+
+Aktuelle Container:
+
+- Monitoring Stack
+- Documentation Stack
+- Selfhosted Git Platform
+
+---
+
+# Docker / Compose Fortschritt
+
+## Monitoring Stack
+
+Bestehend aus:
+
+- Prometheus
+- Grafana
+- Node Exporter
+- cAdvisor
+
+Lerninhalte:
+
+- Docker Compose
+- Container Netzwerke
+- Volumes
+- Bind Mounts
+- Container Kommunikation
+- Port Publishing
+- Docker DNS
+
+---
+
+## BookStack Stack
+
+Bestehend aus:
+
+- BookStack
+- MariaDB
+
+Lerninhalte:
+
+- MariaDB Grundlagen
+- Datenbank User
+- Datenbank Tabellen
+- Datenpersistenz
+- Bind Mount Storage
+- APP_KEY Prinzip
+- Laravel Anwendungen
+- Container Debugging
+- Logs analysieren
+- docker exec
+- printenv
+- Datenbank Verbindungen testen
+
+Wichtigste Erkenntnis:
+
+Container besitzen teilweise eigene Konfigurationsdateien innerhalb der Volumes, welche wichtiger sein können als Docker Environment Variablen.
+
+Beispiel:
+
+```text
+bookstack-app/www/.env
+
+# 05.07.2026 - Docker Reverse Proxy (Nginx) erfolgreich implementiert
+
+## Ziel
+
+Ein zentraler Reverse Proxy sollte alle internen Dienste unter eigenen DNS-Namen erreichbar machen:
+
+- bookstack.renatubuntu
+- gitea.renatubuntu
+- grafana.renatubuntu
+- cadvisor.renatubuntu
+
+Anstatt:
+
+- 192.168.0.180:6875
+- 192.168.0.180:3001
+- 192.168.0.180:3000
+- 192.168.0.180:8080
+
+---
+
+## Neues Compose Projekt erstellt
+
+Neues Docker Compose Projekt:
+
+```text
+docker-compose4
+├── compose.yaml
+└── nginx-config
+    ├── bookstack.conf
+    ├── gitea.conf
+    ├── grafana.conf
+    └── cadvisor.conf
+
+    # Docker Networks verstehen
+
+## Die wichtigste Regel zuerst
+
+Der Netzwerkname innerhalb einer `compose.yaml` ist **nicht automatisch** der echte Docker Netzwerkname.
+
+Beispiel:
+
+### Compose 1
+
+```yaml
+networks:
+  homelab-net:
+```
+
+### Compose 2
+
+```yaml
+networks:
+  homelab-net:
+```
+
+### Compose 3
+
+```yaml
+networks:
+  homelab-net:
+```
+
+Viele denken jetzt:
+
+> Alle Container liegen im gleichen Netzwerk.
+
+Das stimmt **nicht**.
+
+---
+
+# Was Docker Compose tatsächlich macht
+
+Docker Compose erstellt automatisch eigene Netzwerke pro Projekt.
+
+Beispiel:
+
+```bash
+docker compose config
+```
+
+liefert:
+
+```yaml
+name: docker-compose
+```
+
+Dadurch erstellt Docker:
+
+```text
+docker-compose_homelab-net
+```
+
+Bookstack:
+
+```yaml
+name: docker-compose2
+```
+
+erstellt:
+
+```text
+docker-compose2_homelab-net
+```
+
+Gitea:
+
+```yaml
+name: docker-compose3
+```
+
+erstellt:
+
+```text
+docker-compose3_gitea
+```
+
+---
+
+# Beispiel aus meinem Homelab
+
+## Monitoring Stack
+
+```text
+docker-compose_homelab-net
+│
+├── grafana
+├── prometheus
+├── cadvisor
+└── node-exporter
+```
+
+## Bookstack Stack
+
+```text
+docker-compose2_homelab-net
+│
+├── bookstack-app
+└── mariadb
+```
+
+Obwohl beide Netzwerke:
+
+```yaml
+homelab-net
+```
+
+heißen, handelt es sich um **zwei vollständig getrennte Docker Netzwerke**.
+
+Die Container können sich gegenseitig nicht sehen.
+
+---
+
+# Die Ausnahme: external: true
+
+Hier kommt die eigentliche Magie ins Spiel.
+
+```yaml
+networks:
+  reverse-proxy-net:
+    external: true
+```
+
+Das bedeutet:
+
+> Docker Compose soll dieses Netzwerk nicht selbst erstellen.
+
+Stattdessen:
+
+> Verwende ein bereits existierendes Docker Netzwerk.
+
+---
+
+## Netzwerk erstellen
+
+```bash
+docker network create reverse-proxy-net
+```
+
+Danach existiert systemweit:
+
+```text
+reverse-proxy-net
+```
+
+---
+
+## Verwendung in mehreren Compose Projekten
+
+Compose 2:
+
+```yaml
+networks:
+  reverse-proxy-net:
+    external: true
+```
+
+Compose 3:
+
+```yaml
+networks:
+  reverse-proxy-net:
+    external: true
+```
+
+Compose 4:
+
+```yaml
+networks:
+  reverse-proxy-net:
+    external: true
+```
+
+Jetzt befinden sich alle Container im gleichen Netzwerk:
+
+```text
+reverse-proxy-net
+│
+├── reverse-proxy
+├── bookstack-app
+├── gitea
+├── grafana-web
+└── cadvisor
+```
+
+Dadurch funktioniert:
+
+```nginx
+proxy_pass http://bookstack-app:80;
+```
+
+oder:
+
+```nginx
+proxy_pass http://gitea:3000;
+```
+
+Docker DNS löst automatisch die Namen in interne Container-IP-Adressen auf.
+
+---
+
+# Docker DNS
+
+Innerhalb eines Docker Netzwerks kommunizieren Container normalerweise nicht über:
+
+```text
+192.168.x.x
+```
+
+sondern über ihre Servicenamen:
+
+```text
+bookstack-app
+gitea
+grafana-web
+cadvisor
+mariadb
+postgres
+```
+
+Beispiel:
+
+```nginx
+proxy_pass http://bookstack-app:80;
+```
+
+Docker übersetzt intern automatisch:
+
+```text
+bookstack-app
+↓
+172.21.0.2
+```
+
+---
+
+# Mehrere Netzwerke pro Container
+
+Ein Container kann Mitglied mehrerer Netzwerke gleichzeitig sein.
+
+Beispiel:
+
+```text
+bookstack-app
+│
+├── docker-compose2_homelab-net
+└── reverse-proxy-net
+```
+
+Dadurch kann Bookstack:
+
+- mit MariaDB kommunizieren
+- gleichzeitig vom Reverse Proxy erreicht werden
+
+MariaDB dagegen liegt nur hier:
+
+```text
+docker-compose2_homelab-net
+```
+
+Dadurch bleibt die Datenbank vom Reverse Proxy isoliert.
+
+Das entspricht bereits einer sauberen Infrastruktur-Architektur.
+
+---
+
+# Vergleich mit Enterprise Netzwerken
+
+Das Konzept ähnelt stark klassischen Unternehmensnetzwerken:
+
+```text
+DMZ
+Management VLAN
+Backend VLAN
+Frontend VLAN
+Storage VLAN
+```
+
+Ein System darf nur mit den Netzwerken kommunizieren, die es wirklich benötigt.
+
+---
+
+# Nützliche Befehle
+
+## Alle Docker Netzwerke anzeigen
+
+```bash
+docker network ls
+```
+
+---
+
+## Inhalt eines Netzwerkes anzeigen
+
+```bash
+docker network inspect reverse-proxy-net
+```
+
+---
+
+## Netzwerke eines Containers anzeigen
+
+```bash
+docker inspect CONTAINERNAME
+```
+
+---
+
+## Netzwerkmodus eines Containers anzeigen
+
+```bash
+docker inspect CONTAINERNAME | grep NetworkMode
+```
+
+---
+
+# Merksatz
+
+```text
+Gleicher Netzwerkname in verschiedenen compose Dateien
+≠
+gleiches Docker Netzwerk
+
+external: true
+=
+gemeinsames Docker Netzwerk
+```
+
+---
+
+# Mein persönliches Learning
+
+Vor dem Reverse Proxy dachte ich:
+
+```text
+Wenn mehrere compose Dateien denselben Netzwerknamen benutzen,
+dann befinden sich die Container automatisch im selben Netzwerk.
+```
+
+Nach dem Reverse Proxy Projekt wurde klar:
+
+```text
+Docker Compose erstellt standardmäßig eigene Netzwerke pro Projekt.
+
+Nur external: true verbindet mehrere Compose Projekte
+über ein gemeinsames Docker Netzwerk.
+```
+
+Das war einer der wichtigsten Docker Networking Momente meines Homelabs.
