@@ -8,3 +8,5 @@ docker-compose3/gitea-daten/
 docker-compose3/postgres-daten/
 LogIn.txt
 .gitignore
+docker-compose2/backup/
+*.tar.gz
