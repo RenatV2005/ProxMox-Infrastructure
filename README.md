@@ -1205,3 +1205,33 @@ Nur external: true verbindet mehrere Compose Projekte
 ```
 
 Das war einer der wichtigsten Docker Networking Momente meines Homelabs.
+
+# 06.07.2026 - Docker Port Mapping, Docker NAT und Container Networking
+
+## Ziel
+
+Verstehen, warum mehrere Container denselben internen Port verwenden können und warum dennoch unterschiedliche Host-Ports benötigt werden.
+
+---
+
+## Docker Port Syntax
+
+```yaml
+ports:
+  - "HOST_PORT:CONTAINER_PORT"
+
+
+---
+
+## Backups erstellen mit tar
+
+Verstehen wie physische Backups funktionieren.
+
+---
+
+## Durchgeführt
+
+### Backup erstellt
+
+```bash
+sudo tar -czf backup/bookstack-app-backup.tar.gz bookstack-app

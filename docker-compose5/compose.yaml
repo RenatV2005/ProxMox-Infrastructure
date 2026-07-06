@@ -1,0 +1,17 @@
+services:
+  nginx-web-server:
+    image: nginx
+    ports:
+     - "443:443"
+    volumes:
+     - /home/renatubuntu/documentation/docker-compose5/nginx-config:/etc/nginx/conf.d
+     - /home/renatubuntu/documentation/docker-compose5/Webserver:/usr/share/nginx/html
+    networks:
+     - homelab-net
+     - reverse-proxy-net
+    restart: unless-stopped
+
+networks:
+  homelab-net:
+  reverse-proxy-net:
+   external: true
