@@ -10,3 +10,6 @@ LogIn.txt
 .gitignore
 docker-compose2/backup/
 *.tar.gz
+bash-grundlagen/
+Guides/
+

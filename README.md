@@ -1235,3 +1235,288 @@ Verstehen wie physische Backups funktionieren.
 
 ```bash
 sudo tar -czf backup/bookstack-app-backup.tar.gz bookstack-app
+
+# MariaDB Logical Backup mit Docker (Enterprise)
+
+## Ziel
+
+Ein logisches Backup der MariaDB-Datenbank erstellen, ohne das Passwort im Skript zu speichern.
+
+---
+
+# Backup-Befehl
+
+```bash
+docker exec docker-compose2-mariadb-datenbank-1 \
+sh -c 'mariadb-dump -u root -p"$MARIADB_ROOT_PASSWORD" bootstackdb' \
+> backup/bookstack-db-backup.sql
+```
+
+---
+
+# Erklärung
+
+## 1. docker exec
+
+```bash
+docker exec
+```
+
+Führt einen Befehl innerhalb eines bereits laufenden Docker-Containers aus.
+
+---
+
+## 2. Containername
+
+```bash
+docker-compose2-mariadb-datenbank-1
+```
+
+Docker weiß dadurch:
+
+> Der folgende Befehl soll **nicht auf dem Ubuntu Host**, sondern **im MariaDB-Container** ausgeführt werden.
+
+---
+
+## 3. sh -c
+
+```bash
+sh -c
+```
+
+Startet eine Shell innerhalb des Containers.
+
+Das `-c` bedeutet:
+
+> "Führe den folgenden String als Shell-Befehl aus."
+
+Beispiel:
+
+```bash
+sh -c "ls"
+```
+
+führt intern einfach
+
+```bash
+ls
+```
+
+aus.
+
+---
+
+## 4. mariadb-dump
+
+```bash
+mariadb-dump
+```
+
+Erstellt ein **logisches Backup** der Datenbank.
+
+Dabei werden keine Datenbankdateien kopiert.
+
+Stattdessen erzeugt MariaDB eine SQL-Datei mit Befehlen wie:
+
+```sql
+CREATE TABLE ...
+
+INSERT INTO ...
+```
+
+---
+
+## 5. Benutzer
+
+```bash
+-u root
+```
+
+Verbindet sich als Benutzer:
+
+```
+root
+```
+
+---
+
+## 6. Passwort
+
+```bash
+-p"$MARIADB_ROOT_PASSWORD"
+```
+
+Hier wird **keine Zeichenkette** gespeichert.
+
+Die Shell ersetzt
+
+```bash
+$MARIADB_ROOT_PASSWORD
+```
+
+automatisch durch den Wert der Umgebungsvariable.
+
+Beispiel:
+
+```
+MARIADB_ROOT_PASSWORD=koridor1
+```
+
+Intern wird daraus:
+
+```bash
+-pkoridor1
+```
+
+Dadurch muss das Passwort **nicht hart im Skript stehen**.
+
+---
+
+## 7. Datenbank
+
+```bash
+bootstackdb
+```
+
+Die Datenbank, die gesichert werden soll.
+
+---
+
+## 8. >
+
+```bash
+>
+```
+
+Dies ist **kein Docker-Befehl**.
+
+Der Linux-Host leitet die Ausgabe von `mariadb-dump` in eine Datei um.
+
+Ergebnis:
+
+```
+backup/
+└── bookstack-db-backup.sql
+```
+
+---
+
+# Gesamter Ablauf
+
+Ubuntu Host
+
+↓
+
+docker exec
+
+↓
+
+MariaDB Container
+
+↓
+
+sh -c
+
+↓
+
+mariadb-dump
+
+↓
+
+SQL-Ausgabe (STDOUT)
+
+↓
+
+Linux Redirect (>)
+
+↓
+
+backup/bookstack-db-backup.sql
+
+---
+
+# Warum sh -c?
+
+Innerhalb der Shell kennt der Container bereits seine Umgebungsvariablen.
+
+Beispielsweise:
+
+```bash
+MARIADB_ROOT_PASSWORD
+```
+
+Dadurch muss das Passwort nicht im Skript hinterlegt werden.
+
+Dieses Muster wird häufig in Enterprise-Umgebungen verwendet.
+
+---
+
+# Merksatz
+
+Nicht:
+
+```
+Host
+↓
+MariaDB
+```
+
+Sondern:
+
+```
+Host
+
+↓
+
+docker exec
+
+↓
+
+Container
+
+↓
+
+Shell
+
+↓
+
+Programm
+
+↓
+
+Ausgabe
+
+↓
+
+Datei auf dem Host
+```
+
+---
+
+# Bash-Pattern
+
+Dieses Muster wird in Docker sehr häufig verwendet:
+
+```bash
+docker exec <container> \
+sh -c '<programm> "$VARIABLE"'
+```
+
+Beispiele:
+
+```bash
+docker exec postgres \
+sh -c 'pg_dump ...'
+```
+
+```bash
+docker exec nginx \
+sh -c 'nginx -t'
+```
+
+```bash
+docker exec redis \
+sh -c 'redis-cli save'
+```
+
+Es gehört zu den wichtigsten Mustern beim Arbeiten mit Docker und Containern.

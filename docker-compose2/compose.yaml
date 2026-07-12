@@ -16,7 +16,9 @@ services:
 
   bookstack-app:
    image: linuxserver/bookstack
-   environment: 
+   environment:
+    - PUID=1000
+    - PGID=1000 
     -  APP_URL=${APP_URL}
     -  APP_KEY=${APP_KEY}
     - DB_HOST=${DB_HOST}

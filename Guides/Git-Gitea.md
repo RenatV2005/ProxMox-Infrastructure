@@ -238,3 +238,7 @@ git push gitea main
 
 find ~/documentation -name ".git" -type d
 git remote -v
+
+## Repositories umbennen 
+
+git remote rename origin NAME
