@@ -6,6 +6,7 @@ COMPOSES=(
 monitoring-stack
 documentation-stack
 git-platform
+web-stack
 reverse-proxy
 )
 
