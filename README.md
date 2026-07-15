@@ -1,18 +1,21 @@
 # Linux DevOps Homelab
 
-> Personal Infrastructure Lab focused on Linux System Administration, Docker, Monitoring, Networking and DevOps.
+Personal Infrastructure Lab focused on Linux System Administration, Docker, Monitoring and modern DevOps practices.
 
----
+## Current Infrastructure
 
-# About this Project
-
-This repository documents my personal Linux infrastructure running on a Proxmox server.
-
-The goal of this homelab is not simply to install applications, but to understand how production-like infrastructure works by designing, deploying, troubleshooting and documenting every component myself.
-
-Everything is built step by step while continuously learning Linux Administration, Docker, Networking, Git and modern Infrastructure concepts.
-
----
+- ✅ Ubuntu Server running on Proxmox VE
+- ✅ 5 Docker Compose projects
+- ✅ Prometheus + Grafana Monitoring
+- ✅ BookStack + MariaDB
+- ✅ Gitea + PostgreSQL
+- ✅ Nginx Reverse Proxy
+- ✅ Bash Infrastructure Automation
+- ✅ GitHub + Self-hosted Gitea
+- ✅ Backup & Restore concepts
+- 🚧 CI/CD (planned)
+- 🚧 Ansible (planned)
+- 🚧 Terraform (planned)
 
 # Current Infrastructure
 

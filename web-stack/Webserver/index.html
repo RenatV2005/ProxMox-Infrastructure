@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renat Vasilev — IT Infrastructure &amp; Linux</title>
+<meta name="description" content="IT Support Specialist auf dem Weg zum Junior Linux Systemadministrator. Homelab-Projekte: pfSense, Proxmox, Zabbix, Active Directory, Docker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-mark">renat@it-for-all</div>
+    <ul class="nav-links">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projekte</a></li>
+      <li><a href="#experience">Werdegang</a></li>
+      <li><a href="#contact">Kontakt</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header id="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <p class="hero-eyebrow">IT Support → Linux Systemadministrator</p>
+      <h1>IT Infrastructure <span class="accent">Projekt:</span> — </h1>
+      <p class="hero-desc">
+        IT Support Specialist mit fokus auf Weiterbildung:
+        Containerization, Docker, Grafana, Linux (Debian & Ubuntu), Linux Networking, Zabbix & Prometheus Monitoring, Windows Server, Active Directory  — selbst aufgebaut,
+        selbst debuggt, selbst dokumentiert.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-fill">Projekte ansehen</a>
+        <a href="https://linkedin.com/in/renat-vasilev-36b736374" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="log-panel">
+      <div class="log-header">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        career.log
+      </div>
+      <div class="log-body" id="logBody"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= STATUS STRIP ================= -->
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="status-strip">
+      <div class="status-cell">
+        <span class="status-num">1</span>
+        <div class="status-label">AZ-900 Zertifikat</div>
+      </div>
+      <div class="status-cell">
+        <span class="status-num">12+</span>
+        <div class="status-label">VMs im Homelab</div>
+      </div>
+      <div class="status-cell">
+        <span class="status-num">6</span>
+        <div class="status-label">Kern-Projekte</div>
+      </div>
+      <div class="status-cell">
+        <span class="status-num">∞</span>
+        <div class="status-label">Gelöste Fehler</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILLS ================= -->
+<section id="skills">
+  <div class="wrap">
+    <div class="s-head">
+      <div>
+        <p class="s-eyebrow">Kompetenzen</p>
+        <h2 class="s-title">Skills &amp; Tools</h2>
+      </div>
+      <p class="s-note">selbst erarbeitet im<br>produktionsnahen Homelab</p>
+    </div>
+
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <div class="skill-head">
+          <span class="skill-name">Linux Administration</span>
+          <span class="skill-tag">CORE</span>
+        </div>
+        <p class="skill-desc">Debian/Ubuntu Server aufsetzen, konfigurieren, debuggen. Systemd, Logs, Users, Permissions — alles praktisch erarbeitet.</p>
+        <div class="skill-tools">systemctl · journalctl · ssh · chmod · cron</div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-head">
+          <span class="skill-name">Monitoring</span>
+          <span class="skill-tag">ZABBIX</span>
+        </div>
+        <p class="skill-desc">Zabbix Server &amp; Agent komplett selbst aufgebaut. MySQL-Backend, Apache-Frontend, Agent-Server-Kommunikation über Port 10050/10051.</p>
+        <div class="skill-tools">Zabbix Server · Zabbix Agent · MySQL · Apache</div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-head">
+          <span class="skill-name">Netzwerk &amp; Firewall</span>
+          <span class="skill-tag">PFSENSE</span>
+        </div>
+        <p class="skill-desc">pfSense als Core-Router: DHCP, DNS, Firewall-Regeln, Traffic-Control. IP-Kommunikation und Routing praktisch verstanden.</p>
+        <div class="skill-tools">pfSense · DHCP · DNS · Firewall · TCP/IP</div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-head">
+          <span class="skill-name">Automatisierung</span>
+          <span class="skill-tag">BASH</span>
+        </div>
+        <p class="skill-desc">Bash-Scripting für Sysadmin-Aufgaben: Cronjobs, Log-Auswertung, Service-Überwachung. Nächster Schritt: Ansible.</p>
+        <div class="skill-tools">Bash · Cronjob · Shell Scripting · → Ansible</div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-head">
+          <span class="skill-name">Troubleshooting</span>
+          <span class="skill-tag">DEBUG</span>
+        </div>
+        <p class="skill-desc">Systematisches Debugging statt Raten: Fehler analysieren, Ursache identifizieren, fixen, dokumentieren.</p>
+        <div class="skill-tools">ss -tuln · nc -zv · tail -f · ping</div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-head">
+          <span class="skill-name">Datenbanken</span>
+          <span class="skill-tag">MYSQL</span>
+        </div>
+        <p class="skill-desc">MySQL-Nutzer und Rechte verwalten, Datenbanken neu aufsetzen, typische Fehler wie "Access denied" oder log_bin-Probleme gelöst.</p>
+        <div class="skill-tools">MySQL · User Management · Permissions</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<section id="projects">
+  <div class="wrap">
+    <div class="s-head">
+      <div>
+        <p class="s-eyebrow">Homelab</p>
+        <h2 class="s-title">Was ich gebaut habe</h2>
+      </div>
+      <p class="s-note">jedes Projekt: aufgebaut,<br>kaputt gegangen, gefixt</p>
+    </div>
+
+    <div class="project-filters">
+      <button class="filter-btn active" data-filter="all">Alle</button>
+      <button class="filter-btn" data-filter="linux">Linux</button>
+      <button class="filter-btn" data-filter="network">Netzwerk</button>
+      <button class="filter-btn" data-filter="windows">Windows</button>
+      <button class="filter-btn" data-filter="monitoring">Monitoring</button>
+      <button class="filter-btn" data-filter="automation">Automatisierung</button>
+    </div>
+
+    <div class="project-grid">
+
+      <!-- PROJECT 1: Hybrid Infrastruktur -->
+      <article class="project-card" data-tags="network linux windows">
+        <div class="project-diagram">
+          <svg viewBox="0 0 400 165" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a1" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(255,157,77,0.55)"/></marker></defs>
+            <rect x="8" y="62" width="60" height="34" rx="3" fill="#161b24" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <text x="38" y="78" font-family="JetBrains Mono,monospace" font-size="8" fill="#8b94a3" text-anchor="middle">Internet</text>
+            <text x="38" y="88" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">WAN</text>
+            <rect x="120" y="52" width="74" height="54" rx="3" fill="rgba(255,157,77,0.08)" stroke="rgba(255,157,77,0.4)" stroke-width="1.5"/>
+            <text x="157" y="72" font-family="JetBrains Mono,monospace" font-size="8" fill="#ff9d4d" text-anchor="middle">pfSense</text>
+            <text x="157" y="83" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">DHCP · DNS</text>
+            <text x="157" y="94" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">Firewall · VPN</text>
+            <rect x="252" y="24" width="70" height="30" rx="3" fill="rgba(91,157,255,0.1)" stroke="rgba(91,157,255,0.4)" stroke-width="1"/>
+            <text x="287" y="37" font-family="JetBrains Mono,monospace" font-size="7" fill="#5b9dff" text-anchor="middle">Win Server</text>
+            <text x="287" y="47" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">AD + DNS .148</text>
+            <rect x="252" y="64" width="70" height="30" rx="3" fill="#161b24" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <text x="287" y="77" font-family="JetBrains Mono,monospace" font-size="7" fill="#aaa" text-anchor="middle">Zabbix .199</text>
+            <text x="287" y="87" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">Monitoring</text>
+            <rect x="252" y="104" width="70" height="30" rx="3" fill="#161b24" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <text x="287" y="117" font-family="JetBrains Mono,monospace" font-size="7" fill="#aaa" text-anchor="middle">Linux VM .223</text>
+            <text x="287" y="127" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">Nginx · Agent</text>
+            <line x1="68" y1="79" x2="120" y2="79" stroke="rgba(255,157,77,0.4)" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#a1)"/>
+            <line x1="194" y1="69" x2="252" y2="39" stroke="rgba(91,157,255,0.3)" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#a1)"/>
+            <line x1="194" y1="79" x2="252" y2="79" stroke="rgba(255,157,77,0.3)" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#a1)"/>
+            <line x1="194" y1="89" x2="252" y2="119" stroke="rgba(255,157,77,0.3)" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#a1)"/>
+            <rect x="340" y="62" width="50" height="34" rx="3" fill="rgba(74,222,128,0.06)" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
+            <text x="365" y="77" font-family="JetBrains Mono,monospace" font-size="7" fill="#4ade80" text-anchor="middle">Proxmox</text>
+            <text x="365" y="87" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">VMs Host</text>
+          </svg>
+        </div>
+        <div class="project-body">
+          <div class="project-badge">Core Infrastructure</div>
+          <h3 class="project-name">Hybrid Enterprise Homelab</h3>
+          <p class="project-desc">Vollständige Hybrid-Infrastruktur: pfSense als Firewall/Gateway, Windows Server mit Active Directory + DNS, Linux VMs und Proxmox als Hypervisor — alles vernetzt und funktionsfähig.</p>
+          <div class="project-stack">
+            <span class="stack-pill">pfSense</span>
+            <span class="stack-pill">Proxmox</span>
+            <span class="stack-pill">Windows Server</span>
+            <span class="stack-pill">Active Directory</span>
+            <span class="stack-pill">OpenVPN</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROJECT 2: Windows DNS Integration -->
+      <article class="project-card" data-tags="windows network">
+        <div class="project-diagram">
+          <svg viewBox="0 0 400 165" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="14" width="380" height="140" rx="5" fill="#0d1117" stroke="rgba(91,157,255,0.15)" stroke-width="1"/>
+            <rect x="10" y="14" width="380" height="22" rx="5" fill="#161b24"/>
+            <circle cx="26" cy="25" r="4" fill="#ff5f57"/><circle cx="40" cy="25" r="4" fill="#febc2e"/><circle cx="54" cy="25" r="4" fill="#28c840"/>
+            <text x="200" y="29" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">DNS Manager — linuxvm.local</text>
+            <text x="25" y="55" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3">Name</text>
+            <text x="170" y="55" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3">Type</text>
+            <text x="260" y="55" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3">Data</text>
+            <line x1="15" y1="60" x2="385" y2="60" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <text x="25" y="75" font-family="JetBrains Mono,monospace" font-size="7" fill="#5b9dff">zabbix.linuxvm.local</text>
+            <text x="170" y="75" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">A</text>
+            <text x="260" y="75" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff9d4d">192.168.0.199</text>
+            <text x="25" y="91" font-family="JetBrains Mono,monospace" font-size="7" fill="#5b9dff">linuxvm.linuxvm.local</text>
+            <text x="170" y="91" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">A</text>
+            <text x="260" y="91" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff9d4d">192.168.0.223</text>
+            <text x="25" y="107" font-family="JetBrains Mono,monospace" font-size="7" fill="#5b9dff">winserver.linuxvm.local</text>
+            <text x="170" y="107" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">A</text>
+            <text x="260" y="107" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff9d4d">192.168.0.148</text>
+            <line x1="15" y1="115" x2="385" y2="115" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <text x="25" y="131" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">$ ping zabbix</text>
+            <text x="200" y="131" font-family="JetBrains Mono,monospace" font-size="7" fill="#4ade80">→ PONG ✓ (nach Search-Domain-Fix)</text>
+            <text x="25" y="145" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">nameservers: 192.168.0.148  search: linuxvm.local</text>
+          </svg>
+        </div>
+        <div class="project-body">
+          <div class="project-badge">Windows + Linux Integration</div>
+          <h3 class="project-name">Windows DNS + Linux Client Integration</h3>
+          <p class="project-desc">Eigenen DNS-Server auf dem Windows DC aufgebaut, A-Records für alle Hosts erstellt, Linux-Clients via Netplan und Search Domain konfiguriert. Reales Debugging: <code>ping</code> schlug fehl → Ursache analysiert → per Search Domain gefixt.</p>
+          <div class="project-stack">
+            <span class="stack-pill">Windows DNS</span>
+            <span class="stack-pill">Active Directory</span>
+            <span class="stack-pill">Netplan</span>
+            <span class="stack-pill">nslookup</span>
+            <span class="stack-pill">dig</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROJECT 3: Zabbix Monitoring -->
+      <article class="project-card" data-tags="monitoring linux">
+        <div class="project-diagram">
+          <svg viewBox="0 0 400 165" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a3" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(255,157,77,0.5)"/></marker></defs>
+            <rect x="15" y="20" width="105" height="55" rx="4" fill="rgba(255,157,77,0.06)" stroke="rgba(255,157,77,0.25)" stroke-width="1"/>
+            <text x="68" y="39" font-family="JetBrains Mono,monospace" font-size="7" fill="#ff9d4d" text-anchor="middle">Linux VM .223</text>
+            <text x="68" y="51" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3" text-anchor="middle">Zabbix Agent</text>
+            <text x="68" y="62" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">port :10050</text>
+            <rect x="15" y="90" width="105" height="55" rx="4" fill="rgba(255,157,77,0.05)" stroke="rgba(255,157,77,0.18)" stroke-width="1"/>
+            <text x="68" y="109" font-family="JetBrains Mono,monospace" font-size="7" fill="#aaa" text-anchor="middle">Debian VM .111</text>
+            <text x="68" y="121" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3" text-anchor="middle">Zabbix Agent</text>
+            <text x="68" y="132" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">port :10050</text>
+            <rect x="175" y="45" width="115" height="75" rx="4" fill="rgba(91,157,255,0.1)" stroke="rgba(91,157,255,0.4)" stroke-width="1.5"/>
+            <text x="233" y="67" font-family="JetBrains Mono,monospace" font-size="8" fill="#5b9dff" text-anchor="middle">Zabbix Server</text>
+            <text x="233" y="79" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3" text-anchor="middle">.199 · port :10051</text>
+            <text x="233" y="91" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">MySQL · Apache</text>
+            <text x="233" y="103" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">PHP Frontend</text>
+            <line x1="120" y1="48" x2="175" y2="75" stroke="rgba(255,157,77,0.4)" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#a3)"/>
+            <line x1="120" y1="117" x2="175" y2="95" stroke="rgba(255,157,77,0.4)" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#a3)"/>
+            <rect x="330" y="55" width="55" height="55" rx="4" fill="rgba(74,222,128,0.05)" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+            <text x="357" y="75" font-family="JetBrains Mono,monospace" font-size="7" fill="#4ade80" text-anchor="middle">Dashboard</text>
+            <text x="357" y="86" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">Browser</text>
+            <text x="357" y="97" font-family="JetBrains Mono,monospace" font-size="7" fill="#4ade80" text-anchor="middle">ZBX ✓</text>
+            <line x1="290" y1="82" x2="330" y2="82" stroke="rgba(255,157,77,0.4)" stroke-width="1" marker-end="url(#a3)"/>
+          </svg>
+        </div>
+        <div class="project-body">
+          <div class="project-badge">Monitoring</div>
+          <h3 class="project-name">Zabbix Monitoring System</h3>
+          <p class="project-desc">Komplette Monitoring-Architektur selbst aufgebaut: Agent-Server-Kommunikation über Port 10050/10051 verstanden, MySQL-Backend konfiguriert, mehrere Hosts aktiv überwacht — inklusive dem Unterschied zwischen Web-UI und Server-Prozess live debuggt.</p>
+          <div class="project-stack">
+            <span class="stack-pill">Zabbix Server</span>
+            <span class="stack-pill">Zabbix Agent</span>
+            <span class="stack-pill">MySQL</span>
+            <span class="stack-pill">Apache</span>
+            <span class="stack-pill">nc -zv</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROJECT 4: Reverse Proxy -->
+      <article class="project-card" data-tags="linux network">
+        <div class="project-diagram">
+          <svg viewBox="0 0 400 165" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a4" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(255,157,77,0.5)"/></marker></defs>
+            <rect x="10" y="58" width="60" height="40" rx="3" fill="#161b24" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <text x="40" y="75" font-family="JetBrains Mono,monospace" font-size="7" fill="#aaa" text-anchor="middle">Client</text>
+            <text x="40" y="86" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">Browser</text>
+            <rect x="130" y="48" width="90" height="60" rx="3" fill="rgba(255,157,77,0.08)" stroke="rgba(255,157,77,0.35)" stroke-width="1.5"/>
+            <text x="175" y="67" font-family="JetBrains Mono,monospace" font-size="8" fill="#ff9d4d" text-anchor="middle">Nginx</text>
+            <text x="175" y="78" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3" text-anchor="middle">Reverse Proxy</text>
+            <text x="175" y="89" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">port :80</text>
+            <text x="175" y="100" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">/etc/nginx/sites-*</text>
+            <rect x="285" y="48" width="90" height="60" rx="3" fill="rgba(91,157,255,0.08)" stroke="rgba(91,157,255,0.3)" stroke-width="1"/>
+            <text x="330" y="67" font-family="JetBrains Mono,monospace" font-size="8" fill="#5b9dff" text-anchor="middle">Apache</text>
+            <text x="330" y="78" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3" text-anchor="middle">Backend</text>
+            <text x="330" y="89" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">port :8080</text>
+            <text x="330" y="100" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">/var/www/html</text>
+            <line x1="70" y1="78" x2="130" y2="78" stroke="rgba(255,157,77,0.5)" stroke-width="1" marker-end="url(#a4)"/>
+            <line x1="220" y1="78" x2="285" y2="78" stroke="rgba(255,157,77,0.5)" stroke-width="1" marker-end="url(#a4)"/>
+            <text x="200" y="135" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">127.0.0.1 apache.local → /etc/hosts</text>
+            <text x="200" y="148" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">sites-available → symlink → sites-enabled</text>
+          </svg>
+        </div>
+        <div class="project-body">
+          <div class="project-badge">Webserver</div>
+          <h3 class="project-name">Nginx Reverse Proxy + Apache Backend</h3>
+          <p class="project-desc">Nginx als Frontend (Port 80) und Apache als Backend (Port 8080) kombiniert. Symlinks zwischen sites-available und sites-enabled verstanden, lokale Namensauflösung über /etc/hosts, Aufgaben per Cron automatisiert.</p>
+          <div class="project-stack">
+            <span class="stack-pill">Nginx</span>
+            <span class="stack-pill">Apache</span>
+            <span class="stack-pill">Symlinks</span>
+            <span class="stack-pill">/etc/hosts</span>
+            <span class="stack-pill">Cron</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROJECT 5: Active Directory + GPO -->
+      <article class="project-card" data-tags="windows automation">
+        <div class="project-diagram">
+          <svg viewBox="0 0 400 165" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="14" width="175" height="140" rx="4" fill="#0d1117" stroke="rgba(91,157,255,0.18)" stroke-width="1"/>
+            <text x="98" y="32" font-family="JetBrains Mono,monospace" font-size="8" fill="#5b9dff" text-anchor="middle">Active Directory</text>
+            <text x="25" y="50" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3">linuxvm.local</text>
+            <text x="35" y="63" font-family="JetBrains Mono,monospace" font-size="7" fill="#aaa">├─ OU: Users</text>
+            <text x="45" y="75" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">│  ├─ Renat (Admin)</text>
+            <text x="45" y="87" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">│  └─ TestUser</text>
+            <text x="35" y="99" font-family="JetBrains Mono,monospace" font-size="7" fill="#aaa">├─ OU: Groups</text>
+            <text x="45" y="111" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">│  ├─ GG_IT (global)</text>
+            <text x="45" y="123" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">│  └─ DL_IT_Share (local)</text>
+            <text x="35" y="135" font-family="JetBrains Mono,monospace" font-size="7" fill="#aaa">└─ AGDLP-Prinzip ✓</text>
+            <rect x="215" y="14" width="170" height="140" rx="4" fill="#0d1117" stroke="rgba(255,157,77,0.18)" stroke-width="1"/>
+            <text x="300" y="32" font-family="JetBrains Mono,monospace" font-size="8" fill="#ff9d4d" text-anchor="middle">Group Policy</text>
+            <text x="225" y="50" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3">GPO: Drive Mapping</text>
+            <text x="225" y="62" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">I: → \\FileServer\IT</text>
+            <line x1="225" y1="70" x2="370" y2="70" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+            <text x="225" y="83" font-family="JetBrains Mono,monospace" font-size="7" fill="#8b94a3">Troubleshooting:</text>
+            <text x="225" y="95" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">gpresult /r</text>
+            <text x="225" y="107" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">gpupdate /force</text>
+            <text x="225" y="119" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b">Test-NetConnection :445</text>
+            <text x="225" y="135" font-family="JetBrains Mono,monospace" font-size="7" fill="#4ade80">Laufwerk I: erscheint ✓</text>
+          </svg>
+        </div>
+        <div class="project-body">
+          <div class="project-badge">Windows Server</div>
+          <h3 class="project-name">Active Directory + GPO + File Server</h3>
+          <p class="project-desc">Komplette AD-Umgebung mit OU-Struktur nach dem AGDLP-Prinzip, Netzlaufwerke automatisch per GPO gemappt, File Server mit NTFS-Berechtigungen. GPO-Troubleshooting mit gpresult und rsop selbst durchgeführt.</p>
+          <div class="project-stack">
+            <span class="stack-pill">Active Directory</span>
+            <span class="stack-pill">GPO</span>
+            <span class="stack-pill">NTFS</span>
+            <span class="stack-pill">AGDLP</span>
+            <span class="stack-pill">PowerShell</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROJECT 6: Wireshark -->
+      <article class="project-card" data-tags="network linux">
+        <div class="project-diagram">
+          <svg viewBox="0 0 400 165" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="14" width="380" height="140" rx="4" fill="#0d1117" stroke="rgba(91,157,255,0.15)" stroke-width="1"/>
+            <rect x="10" y="14" width="380" height="22" rx="4" fill="#161b24"/>
+            <text x="200" y="29" font-family="JetBrains Mono,monospace" font-size="7" fill="#555d6b" text-anchor="middle">Wireshark — TCP Three-Way Handshake + TLS</text>
+            <text x="20" y="48" font-family="JetBrains Mono,monospace" font-size="6" fill="#8b94a3">No.</text>
+            <text x="45" y="48" font-family="JetBrains Mono,monospace" font-size="6" fill="#8b94a3">Source</text>
+            <text x="115" y="48" font-family="JetBrains Mono,monospace" font-size="6" fill="#8b94a3">Destination</text>
+            <text x="185" y="48" font-family="JetBrains Mono,monospace" font-size="6" fill="#8b94a3">Protocol</text>
+            <text x="235" y="48" font-family="JetBrains Mono,monospace" font-size="6" fill="#8b94a3">Info</text>
+            <line x1="12" y1="52" x2="388" y2="52" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+            <rect x="10" y="53" width="380" height="14" fill="rgba(255,157,77,0.04)"/>
+            <text x="20" y="63" font-family="JetBrains Mono,monospace" font-size="6" fill="#555d6b">1</text>
+            <text x="45" y="63" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">192.168.0.10</text>
+            <text x="115" y="63" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">142.250.x.x</text>
+            <text x="185" y="63" font-family="JetBrains Mono,monospace" font-size="6" fill="#ff9d4d">TCP</text>
+            <text x="235" y="63" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">SYN → (seq=0)</text>
+            <rect x="10" y="67" width="380" height="14" fill="rgba(91,157,255,0.04)"/>
+            <text x="20" y="77" font-family="JetBrains Mono,monospace" font-size="6" fill="#555d6b">2</text>
+            <text x="45" y="77" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">142.250.x.x</text>
+            <text x="115" y="77" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">192.168.0.10</text>
+            <text x="185" y="77" font-family="JetBrains Mono,monospace" font-size="6" fill="#5b9dff">TCP</text>
+            <text x="235" y="77" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">SYN/ACK ← (seq=0,ack=1)</text>
+            <rect x="10" y="81" width="380" height="14" fill="rgba(255,157,77,0.04)"/>
+            <text x="20" y="91" font-family="JetBrains Mono,monospace" font-size="6" fill="#555d6b">3</text>
+            <text x="45" y="91" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">192.168.0.10</text>
+            <text x="115" y="91" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">142.250.x.x</text>
+            <text x="185" y="91" font-family="JetBrains Mono,monospace" font-size="6" fill="#ff9d4d">TCP</text>
+            <text x="235" y="91" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">ACK → (ack=1)</text>
+            <rect x="10" y="95" width="380" height="14" fill="rgba(74,222,128,0.04)"/>
+            <text x="20" y="105" font-family="JetBrains Mono,monospace" font-size="6" fill="#555d6b">4</text>
+            <text x="45" y="105" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">192.168.0.10</text>
+            <text x="115" y="105" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">142.250.x.x</text>
+            <text x="185" y="105" font-family="JetBrains Mono,monospace" font-size="6" fill="#4ade80">TLSv1.3</text>
+            <text x="235" y="105" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">Client Hello</text>
+            <rect x="10" y="109" width="380" height="14" fill="rgba(74,222,128,0.04)"/>
+            <text x="20" y="119" font-family="JetBrains Mono,monospace" font-size="6" fill="#555d6b">5</text>
+            <text x="45" y="119" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">142.250.x.x</text>
+            <text x="115" y="119" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">192.168.0.10</text>
+            <text x="185" y="119" font-family="JetBrains Mono,monospace" font-size="6" fill="#4ade80">TLSv1.3</text>
+            <text x="235" y="119" font-family="JetBrains Mono,monospace" font-size="6" fill="#aaa">Server Hello + Certificate</text>
+            <text x="200" y="143" font-family="JetBrains Mono,monospace" font-size="6" fill="#555d6b" text-anchor="middle">filter: tcp.flags.syn==1 · dns · tls · icmp</text>
+          </svg>
+        </div>
+        <div class="project-body">
+          <div class="project-badge">Netzwerk-Analyse</div>
+          <h3 class="project-name">Wireshark — Netzwerk-Mikroskop</h3>
+          <p class="project-desc">TCP-Three-Way-Handshake live in Paketen nachvollzogen, TLS-Handshake Schritt für Schritt analysiert, ICMP/DNS/HTTPS gefiltert. Erkenntnis: <code>ping</code> zeigt ob etwas funktioniert — Wireshark zeigt warum.</p>
+          <div class="project-stack">
+            <span class="stack-pill">Wireshark</span>
+            <span class="stack-pill">TCP/IP</span>
+            <span class="stack-pill">TLS</span>
+            <span class="stack-pill">DNS</span>
+            <span class="stack-pill">Packet Analysis</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCE ================= -->
+<section id="experience">
+  <div class="wrap">
+    <div class="s-head">
+      <div>
+        <p class="s-eyebrow">Werdegang</p>
+        <h2 class="s-title">Beruflich &amp; Zertifizierungen</h2>
+      </div>
+    </div>
+
+    <div class="timeline-grid">
+      <div>
+        <p class="tl-heading">Beruflich</p>
+        <div class="tl-item">
+          <div class="tl-when">Aktuell</div>
+          <div>
+            <div class="tl-role">IT Support Specialist</div>
+            <div class="tl-sub">Ziel: Junior Linux Systemadministrator</div>
+            <p class="tl-desc">1st/2nd-Level-Support, Ticket-Bearbeitung, Fehleranalyse — parallel intensiver Aufbau von Linux- und Infrastrukturkenntnissen im eigenen Homelab.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="tl-heading">Zertifizierungen &amp; Lernpfad</p>
+        <div class="tl-item">
+          <div class="tl-when">Bestanden</div>
+          <div>
+            <div class="tl-role">Microsoft AZ-900</div>
+            <div class="tl-sub">Azure Fundamentals</div>
+            <p class="tl-desc">IaaS/PaaS/SaaS, Azure-Architektur, RBAC, Azure Monitor — Homelab-Wissen direkt mit Cloud-Konzepten verbunden.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-when">In Arbeit</div>
+          <div>
+            <div class="tl-role">LPIC-1</div>
+            <div class="tl-sub">Linux Professional Institute</div>
+            <p class="tl-desc">Prüfungen 101 + 102 — offizieller Nachweis für Linux-Administration auf Enterprise-Niveau.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-when">Laufend</div>
+          <div>
+            <div class="tl-role">Homelab-Infrastruktur</div>
+            <div class="tl-sub">Selbststudium &amp; Praxis</div>
+            <p class="tl-desc">pfSense, Proxmox, Zabbix, Active Directory, Bash-Automatisierung — selbst aufgebaut, debuggt und dokumentiert.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-box">
+      <div>
+        <p class="s-eyebrow">Kontakt</p>
+        <h2 class="s-title">Lass uns reden</h2>
+        <p>
+          Ich bin offen für Junior-Sysadmin- und 2nd-Level-Support-Positionen mit Linux- und
+          Infrastruktur-Fokus. Schreib mir auf LinkedIn oder schau dir meine Projekte auf GitHub an.
+        </p>
+      </div>
+
+      <div class="contact-links">
+        <a href="https://linkedin.com/in/renat-vasilev-36b736374" target="_blank" rel="noopener" class="contact-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn Profil
+          <span class="sub">renat-vasilev</span>
+        </a>
+        <a href="https://github.com/RenatV2005" target="_blank" rel="noopener" class="contact-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          GitHub
+          <span class="sub">homelab-journey</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <p>© 2026 Renat Vasilev · IT Infrastructure &amp; Linux</p>
+    <p>it-for-all.de</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+services:
+  nginx-web-server:
+    image: renat-nginx:v2
+    ports:
+     - "443:80"
+    networks:
+     - homelab-net
+     - reverse-proxy-net
+    restart: unless-stopped
+
+networks:
+  homelab-net:
+  reverse-proxy-net:
+   external: true
