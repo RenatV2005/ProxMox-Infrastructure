@@ -4,7 +4,7 @@ services:
     ports:
      - "3001:3000"
     volumes:
-     - /home/renatubuntu/documentation/docker-compose3/gitea-daten:/data
+     - /home/renatubuntu/documentation/git-platform/gitea-daten:/data
     networks:
      - gitea
      - reverse-proxy-net
@@ -30,7 +30,7 @@ services:
    networks:
     - gitea
    volumes:
-    - /home/renatubuntu/documentation/docker-compose3/postgres-daten:/var/lib/postgresql/data
+    - /home/renatubuntu/documentation/git-platform/postgres-daten:/var/lib/postgresql/data
 
 networks:
  gitea:

@@ -15,6 +15,7 @@ git-platform/.env
 # Backups
 *.tar.gz
 *.sql
+backups/
 
 # old restores
 *.old
