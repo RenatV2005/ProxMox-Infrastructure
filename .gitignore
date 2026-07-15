@@ -1,15 +1,58 @@
+# ==========================
+# Docker Persistent Data
+# ==========================
+
 grafanafiles/
 prometheus-data/
-docker-compose2/.env
-docker-compose3/.env
-docker-compose2/bookstack-mariadb/
+backups/
+
 docker-compose2/bookstack-app/
+docker-compose2/bookstack-mariadb/
+
 docker-compose3/gitea-daten/
 docker-compose3/postgres-daten/
-LogIn.txt
-.gitignore
-docker-compose2/backup/
-*.tar.gz
-bash-grundlagen/
-Guides/
 
+# ==========================
+# Environment Files
+# ==========================
+
+.env
+.env.*
+
+docker-compose2/.env
+docker-compose3/.env
+
+# ==========================
+# Logs
+# ==========================
+
+*.log
+
+# ==========================
+# Backups
+# ==========================
+
+*.tar
+*.tar.gz
+*.zip
+
+# ==========================
+# Secrets
+# ==========================
+
+*.pem
+*.key
+LogIn.txt
+
+# ==========================
+# Editor
+# ==========================
+
+.vscode/
+.idea/
+
+# ==========================
+# Python
+# ==========================
+
+__pycache__/
