@@ -1,0 +1,13 @@
+---
+- name: Docker soll laufen und beim booten automatisch starten
+  hosts: all
+  gather_facts: false
+
+  tasks: 
+
+    - name: stelle sicher, dass docker gestartet und aktiviert ist
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+       
