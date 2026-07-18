@@ -456,3 +456,64 @@ Später:
 - Repository klonen
 - Branch abhängig von host_vars auswählen
 - Docker Compose deployen
+
+## Server Erreichbarkeit prüfen
+
+ansible all -i inventory/homelab.ini -m ping
+
+- Erwartung:
+
+ubuntu-prod | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+- Wer ist online?
+
+ansible all -i inventory/homelab.ini -a "hostname"
+ansible all -i inventory/homelab.ini -a "uptime"
+
+- Erwartung:
+
+ubuntu-prod | CHANGED | rc=0 >>
+ubuntumainserver
+ubuntu-prod | CHANGED | rc=0 >>
+ 12:05:14 up 22 min,  1 user,  load average: 0.23, 0.19, 0.33
+
+ ## Speicherplatz 
+
+ ansible all -i inventory/homelab.ini -a "df -h /"
+ ansible all -i invenotory/homelab.ini -a "free -h"
+
+ ##Ansible-doc besser verstehen:
+
+ ansible-doc service | grep -A 40 -i EXAMPLES
+ ansible-doc service | grep -A 30 -i options
+ ansible-doc service | less
+ - danach /EXAMPLES, /OPTIONS, /enabled
+
+ ansible prod -i inventory/homelab.ini -m shell -a "dpkg -l | grep -E 'docker|compose'"
+
+ - prüfen nach dem Packet für Docker & Docker Compose
+
+ ansible-playbook --syntax-check -i inventory/homelab.ini playbooks/installation-check.yml
+
+ ansible-playbook --syntax-check \
+-i inventory/homelab.ini \
+playbooks/installation-check.yml
+
+ - nach Playbook Sysntax checken, genau wie mit "docker compose config"
+
+ - bei ansible-playbook, ist es ganz wichtig, dass man become: true schreibt, somit können sudo befehle ausgeführt werden 
+- nach Begriffen searchen mit
+
+ansible-doc -t keyword become
+ansible-doc -t playbook become
+
+ansible-playbook -K -i inventory/homelab.ini playbooks/installation-check.yml
+
+- Eingabe für BECOME Password
+- Ab jetzt vor -m -a und vor playbook immer -K verwenden, somit es als BECOME ausgeführt werden kann
