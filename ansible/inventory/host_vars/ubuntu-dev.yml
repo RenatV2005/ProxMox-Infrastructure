@@ -1,5 +1,5 @@
-repo_branch: feature/ansible
+server_environment: development
 
-docker_user: renatdev
-
-server_environment: dev
+git_repository: "ssh://git@192.168.0.180:2222/gitea/infrastructure.git"
+git_branch: "feature/ansible"
+repository_path: "/home/renatdev/documentation"

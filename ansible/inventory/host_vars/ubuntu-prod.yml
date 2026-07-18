@@ -1,5 +1,5 @@
-repo_branch: main
+server_environment: production
 
-docker_user: renatubuntu
-
-server_environment: prod
+git_repository: "ssh://git@192.168.0.180:2222/gitea/infrastructure.git"
+git_branch: "main"
+repository_path: "/home/renatubuntu/documentation"

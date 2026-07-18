@@ -1,5 +1,5 @@
-repo_branch: main
+server_environment: testing
 
-docker_user: renattest
-
-server_environment: test
+git_repository: "ssh://git@192.168.0.180:2222/gitea/infrastructure.git"
+git_branch: "feature/ansible"
+repository_path: "/home/renattest/documentation"

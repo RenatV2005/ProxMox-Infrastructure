@@ -1,0 +1,11 @@
+---
+- name: Git Infrastruktur Check
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Git Repository klonen oder aktualisieren
+      ansible.builtin.git:
+        repo: "{{ git_repository }}"
+        dest: "{{ repository_path }}"
+        version: "{{ git_branch }}"
