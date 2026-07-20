@@ -1,4 +1,4 @@
-name: Validate Docker Compose
+name: Pipeline Test
 
 on:
   push:
@@ -7,10 +7,19 @@ jobs:
   validate-compose:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    container:
+      image: node:22-bookworm
 
-      - name: Validate Compose Files
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Environment
+        run: |
+          node --version
+          git --version
+          pwd
+          ls -la
+
+      - name: Find Compose Files
         run: |
           find . -name "compose.yaml"

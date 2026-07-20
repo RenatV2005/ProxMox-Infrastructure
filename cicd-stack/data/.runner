@@ -6,7 +6,7 @@
   "token": "55c98a15f06fa50b0254fd993ecc27b2fe26b9ad",
   "address": "http://192.168.0.180:3001",
   "labels": [
-    "ubuntu-latest:docker://ci-image:1.0"
+    "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"
   ],
   "ephemeral": false
 }
