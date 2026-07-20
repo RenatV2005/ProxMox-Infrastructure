@@ -1,25 +1,52 @@
-name: Pipeline Test
+name: Pipeline Compose & Syntax Check
 
 on:
   push:
 
 jobs:
-  validate-compose:
+ validate-compose:
     runs-on: ubuntu-latest
 
     container:
-      image: node:22-bookworm
+      image: ci-image:1.0
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Show Environment
         run: |
+          echo "===== Environment ====="
           node --version
           git --version
           pwd
           ls -la
 
-      - name: Find Compose Files
+      - name: Validate Docker Compose Stacks
         run: |
-          find . -name "compose.yaml"
+          set -e
+
+          echo ""
+          echo "===== Docker Compose Validation ====="
+
+          find . -name "compose.yaml" | while read composefile
+          do
+            stackdir=$(dirname "$composefile")
+
+            echo ""
+            echo "======================================"
+            echo "Checking Stack:"
+            echo "$stackdir"
+            echo "======================================"
+
+            (
+              cd "$stackdir"
+
+              docker compose config > /dev/null
+            )
+
+            echo "SUCCESS: $stackdir"
+          done
+
+          echo ""
+          echo "All Docker Compose files are valid."
