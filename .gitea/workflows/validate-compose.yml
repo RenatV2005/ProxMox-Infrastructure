@@ -1,0 +1,16 @@
+name: Validate Docker Compose
+
+on:
+  push:
+
+jobs:
+  validate-compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Compose Files
+        run: |
+          find . -name "compose.yaml"
