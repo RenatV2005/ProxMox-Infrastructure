@@ -3,7 +3,7 @@ FROM node:22-bookworm
 RUN apt-get update && apt-get install -y \
     git \
     docker.io \
-    docker-compose-v2 \
+    docker-compose \
     ansible \
     python3 \
     python3-pip \
