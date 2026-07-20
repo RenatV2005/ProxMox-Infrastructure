@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: node:22-bookworm
+      image: ci-image:1.0
 
     steps:
       - name: Checkout Repository
