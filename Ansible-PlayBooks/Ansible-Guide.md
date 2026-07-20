@@ -517,3 +517,7 @@ ansible-playbook -K -i inventory/homelab.ini playbooks/installation-check.yml
 
 - Eingabe für BECOME Password
 - Ab jetzt vor -m -a und vor playbook immer -K verwenden, somit es als BECOME ausgeführt werden kann
+
+## Debug Ausgabe:
+
+ansible-playbook playbooks/git.yml -vvv

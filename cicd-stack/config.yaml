@@ -93,7 +93,6 @@ container:
   valid_volumes:
     - /var/run/docker.sock
   workdir_parent:
-  valid_volumes: []
   # Overrides the docker client host with the specified one.
   # If it's empty, act_runner will find an available docker host automatically.
   # If it's "-", act_runner will find an available docker host automatically, but the docker host won't be mounted to the job containers and service containers.
