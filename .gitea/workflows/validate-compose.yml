@@ -29,7 +29,7 @@ jobs:
           echo ""
           echo "===== Docker Compose Validation ====="
 
-          find . -name "compose.yaml" | while read composefile
+          find . -name "*compose.yaml" | while read composefile
           do
             stackdir=$(dirname "$composefile")
 
@@ -56,16 +56,18 @@ jobs:
           set -e
 
           echo ""
-          echo "===== Docker Compose Validation ====="
+          echo "===== Ansible Playbook Validation ====="
+          cd ansible/playbooks
 
           for playbook in *.yml
           do
               echo "Checking $playbook"
 
               ansible-playbook \
+              -i ../inventory/hosts.ini \
               --syntax-check \
               "$playbook"
 
           done
           echo ""
-          echo "All Docker Compose files are valid."
+          echo "All Ansible Playbooks are valid."
