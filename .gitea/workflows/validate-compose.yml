@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ci-image:2.0
+      image: ci-image:3.0
 
     steps:
       - name: Checkout Repository
@@ -48,5 +48,24 @@ jobs:
             echo "SUCCESS: $stackdir"
           done
 
+          echo ""
+          echo "All Docker Compose files are valid."
+
+      - name: Validate Ansible playbooks
+        run: |
+          set -e
+
+          echo ""
+          echo "===== Docker Compose Validation ====="
+
+          for playbook in *.yml
+          do
+              echo "Checking $playbook"
+
+              ansible-playbook \
+              --syntax-check \
+              "$playbook"
+
+          done
           echo ""
           echo "All Docker Compose files are valid."
