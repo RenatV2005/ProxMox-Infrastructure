@@ -7,6 +7,10 @@ git-platform/postgres-data/
 
 grafana-data/
 prometheus-data/
+configs/
+Meine-Guides/
+backup-documentation/
+STACK-STANDARD.md
 
 # Secrets
 documentation-stack/.env
