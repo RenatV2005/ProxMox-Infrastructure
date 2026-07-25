@@ -2,10 +2,10 @@
 documentation-stack/bookstack-app/
 documentation-stack/bookstack-mariadb/
 
-git-platform/gitea-daten/
-git-platform/postgres-daten/
+git-platform/gitea-data/
+git-platform/postgres-data/
 
-grafanafiles/
+grafana-data/
 prometheus-data/
 
 # Secrets

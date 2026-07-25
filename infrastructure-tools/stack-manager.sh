@@ -1,59 +1,75 @@
 #!/bin/bash
 
-COMPOSE_DIR="/home/renatubuntu/documentation"
+#################################
+# Paths
+#################################
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+#################################
+# Docker Compose Projects
+#################################
 
 COMPOSES=(
-monitoring-stack
-documentation-stack
-git-platform
-web-stack
-reverse-proxy
+    monitoring-stack
+    documentation-stack
+    git-platform
+    web-stack
+    reverse-proxy
 )
 
 echo "======================================"
-echo " Compose Manager"
+echo " Stack Manager"
 echo "======================================"
 
-if [ "$1" = "down" ]
-then
+case "$1" in
 
-    for COMPOSE in "${COMPOSES[@]}"
-    do
-        echo
-        echo "Stopping: $COMPOSE"
-
-        cd "$COMPOSE_DIR/$COMPOSE" && docker compose down
-    done
-
-elif [ "$1" = "up" ]
-then
+up)
 
     for COMPOSE in "${COMPOSES[@]}"
     do
         echo
         echo "Starting: $COMPOSE"
 
-        cd "$COMPOSE_DIR/$COMPOSE" && docker compose up -d
+        cd "$PROJECT_ROOT/$COMPOSE" || exit 1
+        docker compose up -d
     done
+;;
 
-elif [ "$1" = "restart" ]
-then
+down)
+
+    for COMPOSE in "${COMPOSES[@]}"
+    do
+        echo
+        echo "Stopping: $COMPOSE"
+
+        cd "$PROJECT_ROOT/$COMPOSE" || exit 1
+        docker compose down
+    done
+;;
+
+restart)
 
     for COMPOSE in "${COMPOSES[@]}"
     do
         echo
         echo "Restarting: $COMPOSE"
 
-        cd "$COMPOSE_DIR/$COMPOSE" && docker compose down
+        cd "$PROJECT_ROOT/$COMPOSE" || exit 1
+        docker compose down
         docker compose up -d
     done
+;;
 
-else
+*)
 
     echo
     echo "Usage:"
-    echo "./stack-manager.sh up"
-    echo "./stack-manager.sh down"
-    echo "./stack-manager.sh restart"
+    echo "  ./stack-manager.sh up"
+    echo "  ./stack-manager.sh down"
+    echo "  ./stack-manager.sh restart"
+    exit 1
+;;
 
-fi
+esac

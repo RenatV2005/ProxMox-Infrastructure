@@ -9,11 +9,5 @@
 - 5432 -> PostgreSQL (internal)
 
 ## Volumes
-- gitea-daten
-- postgres-daten
-
-## Start
-docker compose up -d
-
-## Stop
-docker compose down
+- gitea-data
+- postgres-data

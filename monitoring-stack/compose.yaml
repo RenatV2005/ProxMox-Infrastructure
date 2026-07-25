@@ -7,7 +7,7 @@ services:
     ports:
      - 3000:3000
     volumes:
-     - /home/renatubuntu/documentation/grafanafiles:/var/lib/grafana
+     - ./grafana-data:/var/lib/grafana
     restart: unless-stopped
 
   prometheus-data:
@@ -17,8 +17,8 @@ services:
     ports:
      - 9090:9090
     volumes:
-     - /home/renatubuntu/documentation/prometheus-data:/prometheus
-     - /home/renatubuntu/documentation/configs/prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml
+     - ./prometheus-data:/prometheus
+     - ./prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml
     restart: unless-stopped
 
   node-exporter:

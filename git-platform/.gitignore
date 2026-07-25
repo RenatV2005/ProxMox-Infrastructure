@@ -1,0 +1,6 @@
+.env
+
+gitea-data/
+postgres-data/
+
+*.log
