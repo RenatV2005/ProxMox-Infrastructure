@@ -1,11 +1,34 @@
 ---
-- name: Git Infrastruktur Check
-  hosts: all
-  gather_facts: false
+- name: Git Repository ausrollen
+  hosts: dev,test
+  become: true
+  gather_facts: true
 
   tasks:
-    - name: Git Repository klonen oder aktualisieren
+
+    - name: Paketcache aktualisieren
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Git installieren
+      ansible.builtin.apt:
+        name: git
+        state: present
+
+    - name: Repository-Verzeichnis erstellen
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/{{ repository_directory }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0755"
+
+    - name: Repository klonen oder aktualisieren
+      become: false
       ansible.builtin.git:
         repo: "{{ git_repository }}"
-        dest: "{{ repository_path }}"
+        dest: "/home/{{ ansible_user }}/{{ repository_directory }}"
         version: "{{ git_branch }}"
+        update: true
+        force: true

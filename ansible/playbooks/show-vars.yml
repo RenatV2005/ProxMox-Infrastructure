@@ -1,14 +1,13 @@
 ---
-- name: Zeige Host-Variablen
-  hosts: all
+- name: Variablen anzeigen
+  hosts: dev
   gather_facts: false
 
   tasks:
-
     - name: Zeige Variablen
       ansible.builtin.debug:
         msg:
-          - "Server: {{ inventory_hostname }}"
-          - "Environment: {{ server_environment }}"
-          - "Branch: {{ repo_branch }}"
-          - "Docker User: {{ docker_user }}"
+          - "ansible_user = {{ ansible_user }}"
+          - "git_repository = {{ git_repository }}"
+          - "git_branch = {{ git_branch }}"
+          - "repository_directory = {{ repository_directory }}"
