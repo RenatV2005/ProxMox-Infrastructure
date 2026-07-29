@@ -1,0 +1,2526 @@
+[1mdiff --git a/Meine-Guides/Backup/Backup.md b/Meine-Guides/Backup/Backup.md[m
+[1mdeleted file mode 100644[m
+[1mindex 20f0b5f..0000000[m
+[1m--- a/Meine-Guides/Backup/Backup.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,341 +0,0 @@[m
+[31m-# Backup Arten[m
+[31m-[m
+[31m-## Physisches Backup[m
+[31m-[m
+[31m-Ein physisches Backup sichert die echten Dateien und Ordner auf der Festplatte.[m
+[31m-[m
+[31m-Beispiele:[m
+[31m-[m
+[31m-- Bilder[m
+[31m-- Konfigurationsdateien[m
+[31m-- Zertifikate[m
+[31m-- Uploads[m
+[31m-- Logs[m
+[31m-- komplette Anwendungsordner[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-bookstack-app/[m
+[31m-├── keys/[m
+[31m-├── nginx/[m
+[31m-├── php/[m
+[31m-├── www/[m
+[31m-└── uploads/[m
+[31m-[m
+[31m-Beim Restore wird die komplette Ordnerstruktur wiederhergestellt.[m
+[31m-[m
+[31m-Vorteile:[m
+[31m-[m
+[31m-- Sehr einfach[m
+[31m-- Schnelles Backup[m
+[31m-- Schneller Restore[m
+[31m-- Perfekt für Bind Mounts und Konfigurationsdateien[m
+[31m-[m
+[31m-Nachteile:[m
+[31m-[m
+[31m-- Datenbanken werden nicht sauber gespeichert wenn diese währenddessen schreiben.[m
+[31m-- Große Datenmengen erzeugen große Archive.[m
+[31m-- Nicht flexibel für einzelne Tabellen oder Datensätze.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## Logisches Backup[m
+[31m-[m
+[31m-Ein logisches Backup sichert nicht die Dateien der Datenbank, sondern deren Inhalt.[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-Anstatt:[m
+[31m-[m
+[31m-ibdata1[m
+[31m-ib_logfile0[m
+[31m-undo001[m
+[31m-[m
+[31m-wird gespeichert:[m
+[31m-[m
+[31m-CREATE TABLE books;[m
+[31m-INSERT INTO books VALUES (...);[m
+[31m-[m
+[31m-CREATE TABLE pages;[m
+[31m-INSERT INTO pages VALUES (...);[m
+[31m-[m
+[31m-Das Backup besteht also aus SQL-Befehlen.[m
+[31m-[m
+[31m-Vorteile:[m
+[31m-[m
+[31m-- Datenbank unabhängig vom Dateisystem[m
+[31m-- Einzelne Tabellen können wiederhergestellt werden[m
+[31m-- Migration auf andere Systeme möglich[m
+[31m-- Sehr sicher bei Datenbanken[m
+[31m-[m
+[31m-Nachteile:[m
+[31m-[m
+[31m-- Restore dauert länger[m
+[31m-- Sehr große Datenbanken benötigen länger für Export und Import[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## Typische Enterprise Strategie[m
+[31m-[m
+[31m-Dateien:[m
+[31m-- physisches Backup[m
+[31m-[m
+[31m-Datenbanken:[m
+[31m-- logisches Backup[m
+[31m-[m
+[31m-Beispiele:[m
+[31m-[m
+[31m-Bookstack:[m
+[31m-- bookstack-app -> physisch[m
+[31m-- MariaDB -> logisch[m
+[31m-[m
+[31m-Gitea:[m
+[31m-- gitea-data -> physisch[m
+[31m-- PostgreSQL -> logisch[m
+[31m-[m
+[31m-Nextcloud:[m
+[31m-- nextcloud-data -> physisch[m
+[31m-- MariaDB/PostgreSQL -> logisch[m
+[31m-[m
+[31m-Dies ist die Standardstrategie vieler Linux-Infrastrukturen.[m
+[31m-[m
+[31m-sudo tar -czf backup/bookstack-app.tar.gz bookstack[m
+[31m-[m
+[31m-- tar.gz zip in Directory backup/ erstellen von der Directory bookstack[m
+[31m-[m
+[31m-sudo tar -tvf backup/bookstack-app.tar.gz [m
+[31m-[m
+[31m-- Inhalt prüfen[m
+[31m-[m
+[31m-sudo tar -xzf backup/bookstack-app.tar.gz[m
+[31m-[m
+[31m-docker compose down[m
+[31m-[m
+[31m-mv bookstack-app bookstack-app.old[m
+[31m-[m
+[31m-tar -xzf backup/bookstack-app-backup.tar.gz[m
+[31m-[m
+[31m-docker compose up -d[m
+[31m-[m
+[31m-- erstmal den aktuellen Zustand abspeichern, bevor man dies löscht [m
+[31m-[m
+[31m-docker exec docker-compose2-mariadb-datenbank-1 \[m
+[31m-sh -c 'mariadb-dump -u root -p"$MARIADB_ROOT_PASSWORD" bootstackdb' \[m
+[31m-> backup/bookstack-db-backup.sql[m
+[31m-[m
+[31m-head backup/bookstack-db-backup.sql[m
+[31m-[m
+[31m-- Version, Datenbank, Dump prüfen[m
+[31m-[m
+[31m-grep "CREATE TABLE" backup/bookstack-db-backup.sql[m
+[31m-[m
+[31m-- Tabellen prüfen [m
+[31m-[m
+[31m-grep "INSERT INTO" backup/bookstack-db-backup.sql[m
+[31m-[m
+[31m-- Daten prüfen[m
+[31m-[m
+[31m-less backup/bookstack-db-backup.sql[m
+[31m-[m
+[31m-- SQL Datei lesen [m
+[31m-[m
+[31m-# PostgreSQL Cheat Sheet[m
+[31m-[m
+[31m-## Verbindung zum Container[m
+[31m-[m
+[31m-```bash[m
+[31m-docker exec -it <container> bash[m
+[31m-```[m
+[31m-[m
+[31m-Beispiel[m
+[31m-[m
+[31m-```bash[m
+[31m-docker exec -it docker-compose3-postgres-1 bash[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## PostgreSQL Client starten[m
+[31m-[m
+[31m-```bash[m
+[31m-psql -U postgres[m
+[31m-```[m
+[31m-[m
+[31m-oder[m
+[31m-[m
+[31m-```bash[m
+[31m-psql -U <Benutzer> -d <Datenbank>[m
+[31m-```[m
+[31m-[m
+[31m-Beispiel[m
+[31m-[m
+[31m-```bash[m
+[31m-psql -U gitea -d giteadb[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Datenbanken anzeigen[m
+[31m-[m
+[31m-```sql[m
+[31m-\l[m
+[31m-```[m
+[31m-[m
+[31m-(MariaDB)[m
+[31m-[m
+[31m-```sql[m
+[31m-SHOW DATABASES;[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Datenbank wechseln[m
+[31m-[m
+[31m-```sql[m
+[31m-\c giteadb[m
+[31m-```[m
+[31m-[m
+[31m-(MariaDB)[m
+[31m-[m
+[31m-```sql[m
+[31m-USE bootstackdb;[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Tabellen anzeigen[m
+[31m-[m
+[31m-```sql[m
+[31m-\dt[m
+[31m-```[m
+[31m-[m
+[31m-(MariaDB)[m
+[31m-[m
+[31m-```sql[m
+[31m-SHOW TABLES;[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Tabellenstruktur anzeigen[m
+[31m-[m
+[31m-```sql[m
+[31m-\d users[m
+[31m-```[m
+[31m-[m
+[31m-(MariaDB)[m
+[31m-[m
+[31m-```sql[m
+[31m-DESCRIBE users;[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Daten anzeigen[m
+[31m-[m
+[31m-```sql[m
+[31m-SELECT * FROM users;[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Nur einige Zeilen anzeigen[m
+[31m-[m
+[31m-```sql[m
+[31m-SELECT * FROM users LIMIT 5;[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# PostgreSQL verlassen[m
+[31m-[m
+[31m-```sql[m
+[31m-\q[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Logisches Backup[m
+[31m-[m
+[31m-```bash[m
+[31m-docker exec postgres-container \[m
+[31m-sh -c 'pg_dump -U postgres giteadb' \[m
+[31m-> backup/giteadb.sql[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# SQL-Datei ansehen[m
+[31m-[m
+[31m-```bash[m
+[31m-head backup/giteadb.sql[m
+[31m-```[m
+[31m-[m
+[31m-```bash[m
+[31m-less backup/giteadb.sql[m
+[31m-```[m
+[31m-[m
+[31m-```bash[m
+[31m-tail backup/giteadb.sql[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Restore[m
+[31m-[m
+[31m-```bash[m
+[31m-cat backup/giteadb.sql | docker exec -i postgres-container \[m
+[31m-psql -U postgres giteadb[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Enterprise-Befehle[m
+[31m-[m
+[31m-Datenbanken[m
+[31m-[m
+[31m-```sql[m
+[31m-\l[m
+[31m-```[m
+[31m-[m
+[31m-Tabellen[m
+[31m-[m
+[31m-```sql[m
+[31m-\dt[m
+[31m-```[m
+[31m-[m
+[31m-Tabellenstruktur[m
+[31m-[m
+[31m-```sql[m
+[31m-\d tabellenname[m
+[31m-```[m
+[31m-[m
+[31m-Benutzer[m
+[31m-[m
+[31m-```sql[m
+[31m-\du[m
+[31m-```[m
+[31m-[m
+[31m-Schemas[m
+[31m-[m
+[31m-```sql[m
+[31m-\dn[m
+[31m-```[m
+[31m-[m
+[31m-Aktuelle Verbindung[m
+[31m-[m
+[31m-```sql[m
+[31m-SELECT current_database();[m
+[31m-```[m
+[31m-[m
+[31m-Aktueller Benutzer[m
+[31m-[m
+[31m-```sql[m
+[31m-SELECT current_user;[m
+[31m-```[m
+[31m-[m
+[31m-## Befehl für PostgreSQL Restore[m
+[31m-[m
+[31m-docker exec -i docker-compose3-postgres-1 \[m
+[31m-psql -U gitea gitea \[m
+[31m-< backup.sql[m
+\ No newline at end of file[m
+[1mdiff --git a/Meine-Guides/Docker/Docker-Compose.md b/Meine-Guides/Docker/Docker-Compose.md[m
+[1mdeleted file mode 100644[m
+[1mindex a418a35..0000000[m
+[1m--- a/Meine-Guides/Docker/Docker-Compose.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,62 +0,0 @@[m
+[31m-# Images anzeigen[m
+[31m-[m
+[31m-docker images[m
+[31m-[m
+[31m-# Image herunterladen / lädt ein Image von Dockerhub herunter [m
+[31m-[m
+[31m-docker pull nginx[m
+[31m-[m
+[31m-#  Container starten - einen neuen Container aus dem Image erstellen [m
+[31m-[m
+[31m-docker run nginx[m
+[31m-[m
+[31m-# Container im Hintergrund starten d=detached[m
+[31m-[m
+[31m-docker run -d nginx[m
+[31m-[m
+[31m-# Port weiterleiten Host 8080-> Container 80[m
+[31m-[m
+[31m-docker run -d --name nginx-test -p 8080:80 nginx[m
+[31m-[m
+[31m-# Laufende Container anzeigen [m
+[31m-[m
+[31m-docker ps [m
+[31m-[m
+[31m-# Alle Container anzeigen[m
+[31m-[m
+[31m-docker ps -a[m
+[31m-[m
+[31m-# Logs Anzeigen / Live logs Anzeigen [m
+[31m-[m
+[31m-docker logs nginx-test / docker logs -f nginx-test [m
+[31m-[m
+[31m-# Im Container einloggen / wenn bash fehlt [m
+[31m-[m
+[31m-docker exec -it nginx bash  / docker exec -it nginx sh [m
+[31m-[m
+[31m-# Container verlassen [m
+[31m-[m
+[31m-exit [m
+[31m-[m
+[31m-# Container löschen[m
+[31m-[m
+[31m-docker rm nginx-test[m
+[31m-[m
+[31m-# gestoppten Container löschen [m
+[31m-[m
+[31m-docker stop nginx [m
+[31m-docker rm nginx[m
+[31m-[m
+[31m-# Image löschen[m
+[31m-[m
+[31m-docker rmi nginx[m
+[31m-[m
+[31m-# erst Contianer löschen danach das Image - sonst image is being used by container [m
+[31m-[m
+[31m-# Container umbenennen [m
+[31m-[m
+[31m-docker rename altername neuername[m
+[31m-[m
+[31m-# Vorhanden Container STARTEN / STOPPEN[m
+[31m-[m
+[31m-docker start nginx-web / docker stop nginx-web [m
+\ No newline at end of file[m
+[1mdiff --git a/Meine-Guides/Docker/Docker-Volumes.md b/Meine-Guides/Docker/Docker-Volumes.md[m
+[1mdeleted file mode 100644[m
+[1mindex 05d7134..0000000[m
+[1m--- a/Meine-Guides/Docker/Docker-Volumes.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,26 +0,0 @@[m
+[31m-## Docker Volumes / Bind Mount[m
+[31m-[m
+[31m-# einen Container mit Volume habe ich erstellt, indem ich zuerst meinen alten Nginx Container entfernt, mein Ziel war es, dass die index.html die im Container ist, ich direkt von dem Ubuntu Host, ändern und steuern kann :[m
+[31m-[m
+[31m-docker run -d \[m
+[31m---name nginx-web \[m
+[31m--p 8080:80 \[m
+[31m--v /home/renatubuntu/documentation/Webserver:/usr/share/nginx/html \[m
+[31m-nginx[m
+[31m-[m
+[31m-# mit "-v /home/renatubuntu/documentation/Webserver:" habe ich den Pfad wo meine Index.html festgelegt, dieser pfad ist auf dem Ubuntu Host[m
+[31m-# "/usr/share/nginx/html" das war schon der Pfad im Container drinnnen, somit konnte ich erfolgreich den Volume erstellen[m
+[31m-# nach der Erstellung von Volume, habe ich mich auf dem nginx-web Container eingelogt und im /nginx/html habe ich erfolgreich meinen gewünschten index.html gefunden, somit war mein Ziel erreicht [m
+[31m-[m
+[31m-# Volume anschauen[m
+[31m-[m
+[31m-docker volume ls[m
+[31m-[m
+[31m-# Volume erstellen [m
+[31m-[m
+[31m-docker volume create nginx-data[m
+[31m-[m
+[31m-# Details im Volume anschauen [m
+[31m-[m
+[31m-docker volume inspect nginx-data [m
+[31m-[m
+[1mdiff --git a/Meine-Guides/Docker/Docker.md b/Meine-Guides/Docker/Docker.md[m
+[1mdeleted file mode 100644[m
+[1mindex 8148fe2..0000000[m
+[1m--- a/Meine-Guides/Docker/Docker.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,49 +0,0 @@[m
+[31m-# Docker Version prüfen [m
+[31m-[m
+[31m-docker --version[m
+[31m-[m
+[31m-# meine Ausgabe = Docker version 29.1.3, build 29.1.3-0ubuntu4.1[m
+[31m-[m
+[31m-# Docker Grundlagen[m
+[31m-[m
+[31m-## Image herunterladen[m
+[31m-[m
+[31m-docker pull nginx[m
+[31m-[m
+[31m-## Container starten[m
+[31m-[m
+[31m-sudo docker run -d -p 80:80 nginx[m
+[31m-[m
+[31m-## Container anzeigen[m
+[31m-[m
+[31m-sudo docker ps[m
+[31m-[m
+[31m-# 07.06.26[m
+[31m-[m
+[31m-docker run -d \[m
+[31m---name nginx-web \[m
+[31m---network homelab-net \[m
+[31m--p 8080:80 \[m
+[31m--v /home/renatubuntu/documentation/Webserver:/usr/share/nginx/html \[m
+[31m--v /home/renatubuntu/documentation/nginx-config/default.conf:/etc/nginx/conf.d/default.conf \[m
+[31m---restart unless-stopped \[m
+[31m-nginx[m
+[31m-[m
+[31m----[m
+[31m-# 10.06.26[m
+[31m-[m
+[31m-## Docker Network untersuchen[m
+[31m-[m
+[31m-docker inspect docker-compose-nginx-webserver-1[m
+[31m-[m
+[31m-* Image aus dem Dockerhub prüfen mit:[m
+[31m-docker search apache2[m
+[31m-[m
+[31m-* lokale images prüfen mit[m
+[31m-docker images[m
+[31m-[m
+[31m-* Image Details anschauen[m
+[31m-docker inspect nginx[m
+[31m-[m
+[31m-# 11.06.26[m
+[31m-[m
+[1mdiff --git a/Meine-Guides/Docker/Dockerfiles.md b/Meine-Guides/Docker/Dockerfiles.md[m
+[1mdeleted file mode 100644[m
+[1mindex 6110ca8..0000000[m
+[1m--- a/Meine-Guides/Docker/Dockerfiles.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,171 +0,0 @@[m
+[31m-# Dockerfiles Grundlagen[m
+[31m-[m
+[31m-## Was ist ein Dockerfile?[m
+[31m-[m
+[31m-Ein Dockerfile ist der Bauplan eines Docker Images.[m
+[31m-[m
+[31m-Docker liest das Dockerfile Zeile für Zeile und erstellt daraus ein neues Image.[m
+[31m-[m
+[31m-```[m
+[31m-Dockerfile[m
+[31m-        │[m
+[31m-        ▼[m
+[31m-docker build[m
+[31m-        │[m
+[31m-        ▼[m
+[31m-Docker Image[m
+[31m-        │[m
+[31m-        ▼[m
+[31m-Container[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Unterschied zwischen Image und Dockerfile[m
+[31m-[m
+[31m-Image[m
+[31m-[m
+[31m-- Fertiges Produkt[m
+[31m-- Wird gestartet[m
+[31m-- Kann aus Docker Hub stammen[m
+[31m-- Kann selbst erstellt werden[m
+[31m-[m
+[31m-Dockerfile[m
+[31m-[m
+[31m-- Bauplan[m
+[31m-- Erstellt Images[m
+[31m-- Kann versioniert werden[m
+[31m-- Liegt im Git Repository[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Projektstruktur[m
+[31m-[m
+[31m-```[m
+[31m-dockerfiles/[m
+[31m-[m
+[31m-└── nginx/[m
+[31m-[m
+[31m-    Dockerfile[m
+[31m-    nginx.conf[m
+[31m-    index.html[m
+[31m-    style.css[m
+[31m-    script.js[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Erstes Dockerfile[m
+[31m-[m
+[31m-```Dockerfile[m
+[31m-FROM nginx:latest[m
+[31m-[m
+[31m-COPY nginx.conf /etc/nginx/conf.d/default.conf[m
+[31m-[m
+[31m-COPY index.html /usr/share/nginx/html/index.html[m
+[31m-[m
+[31m-COPY style.css /usr/share/nginx/html/style.css[m
+[31m-[m
+[31m-COPY script.js /usr/share/nginx/html/script.js[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Erklärung[m
+[31m-[m
+[31m-## FROM[m
+[31m-[m
+[31m-```Dockerfile[m
+[31m-FROM nginx:latest[m
+[31m-```[m
+[31m-[m
+[31m-Verwendet das offizielle Nginx Image als Grundlage.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## COPY[m
+[31m-[m
+[31m-```Dockerfile[m
+[31m-COPY index.html /usr/share/nginx/html/index.html[m
+[31m-```[m
+[31m-[m
+[31m-Kopiert eine Datei aus dem Projekt in das Docker Image.[m
+[31m-[m
+[31m-Die Datei befindet sich anschließend dauerhaft im Image.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Docker Image bauen[m
+[31m-[m
+[31m-Im Dockerfile-Ordner:[m
+[31m-[m
+[31m-```bash[m
+[31m-docker build -t renat-nginx:v1 .[m
+[31m-```[m
+[31m-[m
+[31m-Bedeutung:[m
+[31m-[m
+[31m-- docker build → Image erstellen[m
+[31m-- -t → Name vergeben[m
+[31m-- renat-nginx → Image Name[m
+[31m-- v1 → Version[m
+[31m-- . → aktueller Ordner als Build Context[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Images anzeigen[m
+[31m-[m
+[31m-```bash[m
+[31m-docker images[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Compose verwenden[m
+[31m-[m
+[31m-Vorher[m
+[31m-[m
+[31m-```yaml[m
+[31m-image: nginx[m
+[31m-```[m
+[31m-[m
+[31m-Nachher[m
+[31m-[m
+[31m-```yaml[m
+[31m-image: renat-nginx:v1[m
+[31m-```[m
+[31m-[m
+[31m-Jetzt wird nicht mehr das Image von Docker Hub verwendet,[m
+[31m-sondern das selbst gebaute Image.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Wichtige Erkenntnisse[m
+[31m-[m
+[31m-Dockerfile[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Docker Image[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Docker Compose[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Container[m
+[31m-[m
+[31m-Compose startet Container.[m
+[31m-[m
+[31m-Dockerfiles bauen Images.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Vorteile[m
+[31m-[m
+[31m-- Eigene Konfiguration im Image[m
+[31m-- Eigene Webseite im Image[m
+[31m-- Weniger Volumes[m
+[31m-- Versionierbar mit Git[m
+[31m-- Grundlage für CI/CD[m
+[1mdiff --git a/Meine-Guides/Docker/env-Guide.md b/Meine-Guides/Docker/env-Guide.md[m
+[1mdeleted file mode 100644[m
+[1mindex 10a92a4..0000000[m
+[1m--- a/Meine-Guides/Docker/env-Guide.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,335 +0,0 @@[m
+[31m-# .env Guide (Docker Compose)[m
+[31m-[m
+[31m-# Ziel[m
+[31m-[m
+[31m-Eine `.env`-Datei dient dazu, Konfigurationswerte und Geheimnisse (Secrets) von der `compose.yaml` zu trennen.[m
+[31m-[m
+[31m-Beispiele:[m
+[31m-[m
+[31m-- Passwörter[m
+[31m-- API Keys[m
+[31m-- Datenbanknamen[m
+[31m-- Hostnamen[m
+[31m-- URLs[m
+[31m-- Tokens[m
+[31m-[m
+[31m-Dadurch muss die `compose.yaml` nicht geändert werden.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Aufbau[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```env[m
+[31m-MYSQL_ROOT_PASSWORD=meinpasswort[m
+[31m-MYSQL_DATABASE=app[m
+[31m-MYSQL_USER=app[m
+[31m-MYSQL_PASSWORD=passwort[m
+[31m-[m
+[31m-APP_URL=http://192.168.0.182[m
+[31m-APP_KEY=base64:xxxxxxxxxxxxxxxxxxxxxxxx[m
+[31m-[m
+[31m-DB_HOST=mysql[m
+[31m-DB_DATABASE=app[m
+[31m-DB_USER=app[m
+[31m-DB_PASS=passwort[m
+[31m-```[m
+[31m-[m
+[31m-Keine Leerzeichen verwenden.[m
+[31m-[m
+[31m-Richtig:[m
+[31m-[m
+[31m-```env[m
+[31m-DB_USER=bookstack[m
+[31m-```[m
+[31m-[m
+[31m-Falsch:[m
+[31m-[m
+[31m-```env[m
+[31m-DB_USER = bookstack[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# compose.yaml[m
+[31m-[m
+[31m-Die Variablen werden mit `${...}` eingebunden.[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```yaml[m
+[31m-environment:[m
+[31m-  - DB_HOST=${DB_HOST}[m
+[31m-  - DB_DATABASE=${DB_DATABASE}[m
+[31m-  - DB_USER=${DB_USER}[m
+[31m-  - DB_PASS=${DB_PASS}[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Prüfen ob Docker die .env geladen hat[m
+[31m-[m
+[31m-```bash[m
+[31m-docker compose config[m
+[31m-```[m
+[31m-[m
+[31m-Hier müssen alle Variablen ersetzt worden sein.[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```yaml[m
+[31m-environment:[m
+[31m-  DB_HOST: mariadb[m
+[31m-  DB_DATABASE: bookstack[m
+[31m-  DB_USER: bookstack[m
+[31m-  DB_PASS: koridor1[m
+[31m-```[m
+[31m-[m
+[31m-Wenn stattdessen Warnungen erscheinen:[m
+[31m-[m
+[31m-```text[m
+[31m-The "DB_USER" variable is not set.[m
+[31m-```[m
+[31m-[m
+[31m-Dann wurde die `.env` nicht geladen oder der Variablenname stimmt nicht.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Debugging[m
+[31m-[m
+[31m-## 1. .env anzeigen[m
+[31m-[m
+[31m-```bash[m
+[31m-cat .env[m
+[31m-```[m
+[31m-[m
+[31m-Kontrollieren:[m
+[31m-[m
+[31m-- Schreibfehler[m
+[31m-- fehlende Variablen[m
+[31m-- falsche Passwörter[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 2. compose prüfen[m
+[31m-[m
+[31m-```bash[m
+[31m-docker compose config[m
+[31m-```[m
+[31m-[m
+[31m-Kontrollieren:[m
+[31m-[m
+[31m-- Werden alle Werte übernommen?[m
+[31m-- Gibt es Warnungen?[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 3. Container starten[m
+[31m-[m
+[31m-```bash[m
+[31m-docker compose up -d[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 4. Logs prüfen[m
+[31m-[m
+[31m-```bash[m
+[31m-docker logs <container>[m
+[31m-```[m
+[31m-[m
+[31m-Typische Fehler:[m
+[31m-[m
+[31m-```[m
+[31m-Access denied[m
+[31m-```[m
+[31m-[m
+[31m-→ Benutzer oder Passwort falsch[m
+[31m-[m
+[31m-```[m
+[31m-APP_KEY missing[m
+[31m-```[m
+[31m-[m
+[31m-→ APP_KEY fehlt[m
+[31m-[m
+[31m-```[m
+[31m-Connection refused[m
+[31m-```[m
+[31m-[m
+[31m-→ Datenbank läuft nicht[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# APP_KEY erzeugen[m
+[31m-[m
+[31m-Viele Anwendungen benötigen einen geheimen Schlüssel.[m
+[31m-[m
+[31m-Beispiel BookStack:[m
+[31m-[m
+[31m-```bash[m
+[31m-docker run -it --rm \[m
+[31m---entrypoint /bin/bash \[m
+[31m-lscr.io/linuxserver/bookstack:latest appkey[m
+[31m-```[m
+[31m-[m
+[31m-Ausgabe:[m
+[31m-[m
+[31m-```text[m
+[31m-base64:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx[m
+[31m-```[m
+[31m-[m
+[31m-Diesen Wert in die `.env` eintragen:[m
+[31m-[m
+[31m-```env[m
+[31m-APP_KEY=base64:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Persistente Daten[m
+[31m-[m
+[31m-Viele Container speichern ihre Konfiguration dauerhaft.[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```[m
+[31m-bookstack-app/www/.env[m
+[31m-```[m
+[31m-[m
+[31m-Änderungen an der Docker-`.env` werden danach häufig nicht automatisch übernommen.[m
+[31m-[m
+[31m-Deshalb prüfen:[m
+[31m-[m
+[31m-```bash[m
+[31m-find . -name ".env"[m
+[31m-```[m
+[31m-[m
+[31m-Danach:[m
+[31m-[m
+[31m-```bash[m
+[31m-cat ./bookstack-app/www/.env[m
+[31m-```[m
+[31m-[m
+[31m-Kontrollieren:[m
+[31m-[m
+[31m-- APP_URL[m
+[31m-- APP_KEY[m
+[31m-- DB_HOST[m
+[31m-- DB_DATABASE[m
+[31m-- DB_USERNAME[m
+[31m-- DB_PASSWORD[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# HTTP testen[m
+[31m-[m
+[31m-Webserver prüfen:[m
+[31m-[m
+[31m-```bash[m
+[31m-curl localhost:PORT[m
+[31m-```[m
+[31m-[m
+[31m-oder[m
+[31m-[m
+[31m-```bash[m
+[31m-curl http://SERVER-IP:PORT[m
+[31m-```[m
+[31m-[m
+[31m-Redirects prüfen:[m
+[31m-[m
+[31m-```bash[m
+[31m-curl -I http://SERVER-IP:PORT[m
+[31m-```[m
+[31m-[m
+[31m-Interessant:[m
+[31m-[m
+[31m-```[m
+[31m-Location:[m
+[31m-```[m
+[31m-[m
+[31m-Dort sieht man, wohin die Anwendung weiterleitet.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Netzwerk prüfen[m
+[31m-[m
+[31m-Offene Ports:[m
+[31m-[m
+[31m-```bash[m
+[31m-ss -tulpen[m
+[31m-```[m
+[31m-[m
+[31m-Container:[m
+[31m-[m
+[31m-```bash[m
+[31m-docker ps[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Reihenfolge beim Debuggen[m
+[31m-[m
+[31m-1. cat .env[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-2. docker compose config[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-3. docker compose up -d[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-4. docker ps[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-5. docker logs[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-6. curl localhost:PORT[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-7. curl SERVER-IP:PORT[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-8. ss -tulpen[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-9. Persistente .env prüfen[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Best Practices[m
+[31m-[m
+[31m-✅ Keine Passwörter direkt in die compose.yaml schreiben[m
+[31m-[m
+[31m-✅ Alle Konfiguration in `.env`[m
+[31m-[m
+[31m-✅ `.env` niemals in ein öffentliches Git-Repository committen[m
+[31m-[m
+[31m-✅ Immer zuerst `docker compose config` prüfen[m
+[31m-[m
+[31m-✅ Logs lesen bevor Änderungen vorgenommen werden[m
+[31m-[m
+[31m-✅ Bei Anwendungen mit persistenten Volumes zusätzlich die interne `.env` kontrollieren[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Gelernt[m
+[31m-[m
+[31m-- Verwendung von `.env`[m
+[31m-- Docker Compose Variablen[m
+[31m-- APP_KEY[m
+[31m-- Secrets[m
+[31m-- Docker Logs[m
+[31m-- compose config[m
+[31m-- HTTP Debugging[m
+[31m-- Persistente Konfiguration[m
+[31m-- Container Debugging[m
+[1mdiff --git a/Meine-Guides/Git/Git-Gitea.md b/Meine-Guides/Git/Git-Gitea.md[m
+[1mdeleted file mode 100644[m
+[1mindex 691ceb4..0000000[m
+[1m--- a/Meine-Guides/Git/Git-Gitea.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,244 +0,0 @@[m
+[31m-# Git Cheatsheet[m
+[31m-Datum: 04.07.2026[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 1. Repository erstellen[m
+[31m-[m
+[31m-```bash[m
+[31m-git init[m
+[31m-```[m
+[31m-[m
+[31m-Erstellt den versteckten `.git` Ordner.[m
+[31m-[m
+[31m-Dieser Ordner sagt Git:[m
+[31m-[m
+[31m-> Alles innerhalb dieses Verzeichnisses gehört zu diesem Repository.[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```[m
+[31m-docker-compose3/[m
+[31m-├── .git[m
+[31m-├── compose.yaml[m
+[31m-└── README.md[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 2. Prüfen ob ein Remote existiert[m
+[31m-[m
+[31m-```bash[m
+[31m-git remote -v[m
+[31m-```[m
+[31m-[m
+[31m-Leere Ausgabe:[m
+[31m-[m
+[31m-> Repository existiert nur lokal.[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```[m
+[31m-<keine Ausgabe>[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 3. Remote hinzufügen[m
+[31m-[m
+[31m-## Gitea[m
+[31m-[m
+[31m-```bash[m
+[31m-git remote add gitea http://192.168.0.180:3001/gitea/gitea-stack.git[m
+[31m-```[m
+[31m-[m
+[31m-## Github[m
+[31m-[m
+[31m-```bash[m
+[31m-git remote add github git@github.com:Renat/repository.git[m
+[31m-```[m
+[31m-[m
+[31m-Der Name ist frei wählbar:[m
+[31m-[m
+[31m-- gitea[m
+[31m-- github[m
+[31m-- backup[m
+[31m-- work[m
+[31m-- origin[m
+[31m-[m
+[31m-`origin` ist nur ein Standardname.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 4. Anzeigen wohin gepusht wird[m
+[31m-[m
+[31m-```bash[m
+[31m-git remote -v[m
+[31m-```[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```[m
+[31m-gitea   http://192.168.0.180:3001/gitea/gitea-stack.git (fetch)[m
+[31m-gitea   http://192.168.0.180:3001/gitea/gitea-stack.git (push)[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 5. Dateien zum Commit hinzufügen[m
+[31m-[m
+[31m-```bash[m
+[31m-git add .[m
+[31m-```[m
+[31m-[m
+[31m-Wichtig:[m
+[31m-[m
+[31m-`git add` entscheidet NICHT wohin gepusht wird.[m
+[31m-[m
+[31m-Es fügt Dateien lediglich dem nächsten Commit hinzu.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 6. Änderungen speichern[m
+[31m-[m
+[31m-```bash[m
+[31m-git commit -m "Beschreibung"[m
+[31m-```[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```bash[m
+[31m-git commit -m "Add README and compose file"[m
+[31m-```[m
+[31m-[m
+[31m-Ein Commit ist ein Snapshot des Projekts.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 7. Branch auf main setzen[m
+[31m-[m
+[31m-```bash[m
+[31m-git branch -M main[m
+[31m-```[m
+[31m-[m
+[31m-Viele moderne Repositories nutzen `main`.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 8. Erstes Pushen[m
+[31m-[m
+[31m-## Gitea[m
+[31m-[m
+[31m-```bash[m
+[31m-git push -u gitea main[m
+[31m-```[m
+[31m-[m
+[31m-## Github[m
+[31m-[m
+[31m-```bash[m
+[31m-git push -u github main[m
+[31m-```[m
+[31m-[m
+[31m-`-u` bedeutet:[m
+[31m-[m
+[31m-> Merke dir diese Verbindung dauerhaft.[m
+[31m-[m
+[31m-Danach reicht meistens:[m
+[31m-[m
+[31m-```bash[m
+[31m-git push[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 9. Explizites Pushen[m
+[31m-[m
+[31m-Ich verwende grundsätzlich:[m
+[31m-[m
+[31m-```bash[m
+[31m-git push gitea main[m
+[31m-```[m
+[31m-[m
+[31m-oder[m
+[31m-[m
+[31m-```bash[m
+[31m-git push github main[m
+[31m-```[m
+[31m-[m
+[31m-Dadurch ist sofort klar:[m
+[31m-[m
+[31m-- welches Repository[m
+[31m-- welcher Server[m
+[31m-- welches Ziel[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 10. Status prüfen[m
+[31m-[m
+[31m-```bash[m
+[31m-git status[m
+[31m-```[m
+[31m-[m
+[31m-Der wahrscheinlich wichtigste Git Befehl.[m
+[31m-[m
+[31m-Vor jedem Commit prüfen:[m
+[31m-[m
+[31m-- Was wird committed?[m
+[31m-- Ist .env dabei?[m
+[31m-- Sind Datenbanken dabei?[m
+[31m-- Sind Logs dabei?[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 11. .gitignore[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```gitignore[m
+[31m-.env[m
+[31m-postgres-daten/[m
+[31m-gitea-daten/[m
+[31m-*.log[m
+[31m-```[m
+[31m-[m
+[31m-`.gitignore` ignoriert nur Dateien die Git noch nicht kennt.[m
+[31m-[m
+[31m-Bereits getrackte Dateien werden weiterhin verfolgt.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Mentales Modell[m
+[31m-[m
+[31m-Repository:[m
+[31m-[m
+[31m-```[m
+[31m-docker-compose3/[m
+[31m-└── .git[m
+[31m-```[m
+[31m-[m
+[31m-Remote:[m
+[31m-[m
+[31m-```[m
+[31m-gitea[m
+[31m-```[m
+[31m-[m
+[31m-Push:[m
+[31m-[m
+[31m-```bash[m
+[31m-git push gitea main[m
+[31m-```[m
+[31m-[m
+[31m-Übersetzung:[m
+[31m-[m
+[31m-> Schiebe meinen lokalen Branch "main"[m
+[31m-> zum Remote "gitea"[m
+[31m-> auf dessen Branch "main".[m
+[31m-[m
+[31m-# Repositories finden[m
+[31m-[m
+[31m-find ~/documentation -name ".git" -type d[m
+[31m-git remote -v[m
+[31m-[m
+[31m-## Repositories umbennen [m
+[31m-[m
+[31m-git remote rename origin NAME[m
+\ No newline at end of file[m
+[1mdiff --git a/Meine-Guides/Linux/Linux-Networking.md b/Meine-Guides/Linux/Linux-Networking.md[m
+[1mdeleted file mode 100644[m
+[1mindex 86f9023..0000000[m
+[1m--- a/Meine-Guides/Linux/Linux-Networking.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,2 +0,0 @@[m
+[31m-# Linux-Networking[m
+[31m-[m
+[1mdiff --git a/Meine-Guides/Linux/Packet-Guide.md b/Meine-Guides/Linux/Packet-Guide.md[m
+[1mdeleted file mode 100644[m
+[1mindex c849bb9..0000000[m
+[1m--- a/Meine-Guides/Linux/Packet-Guide.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,414 +0,0 @@[m
+[31m-# Linux Debugging Guide[m
+[31m-# Pakete, Versionen & Repositorys verstehen[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Warum ist dieser Guide wichtig?[m
+[31m-[m
+[31m-Ein Programm kann auf zwei Systemen unterschiedlich funktionieren, obwohl[m
+[31m-es den gleichen Namen besitzt.[m
+[31m-[m
+[31m-Der Grund sind meistens:[m
+[31m-[m
+[31m-- andere Distribution[m
+[31m-- andere Paketquelle (Repository)[m
+[31m-- andere Paketversion[m
+[31m-[m
+[31m-Bevor etwas installiert wird, sollte immer geprüft werden:[m
+[31m-[m
+[31m-- Welche Version läuft?[m
+[31m-- Woher stammt das Paket?[m
+[31m-- Welche Distribution benutze ich?[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Die wichtigsten Begriffe[m
+[31m-[m
+[31m-## Distribution[m
+[31m-[m
+[31m-Beispiele[m
+[31m-[m
+[31m-Debian 12 (Bookworm)[m
+[31m-[m
+[31m-Debian 13 (Trixie)[m
+[31m-[m
+[31m-Ubuntu 24.04[m
+[31m-[m
+[31m-Fedora[m
+[31m-[m
+[31m-Jede Distribution liefert andere Paketversionen.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## Repository[m
+[31m-[m
+[31m-Ein Repository ist eine Paketquelle.[m
+[31m-[m
+[31m-Beispiele[m
+[31m-[m
+[31m-Debian Repository[m
+[31m-[m
+[31m-Docker Repository[m
+[31m-[m
+[31m-Microsoft Repository[m
+[31m-[m
+[31m-Hashicorp Repository[m
+[31m-[m
+[31m-Eine Distribution kann mehrere Repositorys gleichzeitig verwenden.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## Paket[m
+[31m-[m
+[31m-Ein Paket enthält Programme.[m
+[31m-[m
+[31m-Beispiele[m
+[31m-[m
+[31m-docker.io[m
+[31m-[m
+[31m-docker-cli[m
+[31m-[m
+[31m-docker-compose[m
+[31m-[m
+[31m-nginx[m
+[31m-[m
+[31m-git[m
+[31m-[m
+[31m-ansible[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Warum unterscheiden sich Versionen?[m
+[31m-[m
+[31m-Beispiel[m
+[31m-[m
+[31m-Host[m
+[31m-[m
+[31m-Docker Compose 2.26[m
+[31m-[m
+[31m-Container[m
+[31m-[m
+[31m-Docker Compose 1.29[m
+[31m-[m
+[31m-Obwohl beide[m
+[31m-[m
+[31m-docker-compose[m
+[31m-[m
+[31m-heißen.[m
+[31m-[m
+[31m-Warum?[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Andere Debian-Version.[m
+[31m-[m
+[31m-Oder[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Anderes Repository.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Wichtigste Regel[m
+[31m-[m
+[31m-Gleicher Paketname[m
+[31m-[m
+[31m-!=[m
+[31m-[m
+[31m-gleiche Version[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Betriebssystem anzeigen[m
+[31m-[m
+[31m-cat /etc/os-release[m
+[31m-[m
+[31m-oder[m
+[31m-[m
+[31m-hostnamectl[m
+[31m-[m
+[31m-Beispiel[m
+[31m-[m
+[31m-Debian GNU/Linux 13 (Trixie)[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Installierte Pakete anzeigen[m
+[31m-[m
+[31m-dpkg -l[m
+[31m-[m
+[31m-Alle Docker Pakete[m
+[31m-[m
+[31m-dpkg -l | grep docker[m
+[31m-[m
+[31m-Alle Compose Pakete[m
+[31m-[m
+[31m-dpkg -l | grep compose[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Version eines Programms[m
+[31m-[m
+[31m-docker --version[m
+[31m-[m
+[31m-docker compose version[m
+[31m-[m
+[31m-git --version[m
+[31m-[m
+[31m-ansible --version[m
+[31m-[m
+[31m-python3 --version[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Wo befindet sich das Programm?[m
+[31m-[m
+[31m-which docker[m
+[31m-[m
+[31m-Beispiel[m
+[31m-[m
+[31m-/usr/bin/docker[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Welches Paket besitzt diese Datei?[m
+[31m-[m
+[31m-dpkg -S $(which docker)[m
+[31m-[m
+[31m-Beispiel[m
+[31m-[m
+[31m-docker-cli:[m
+[31m-/usr/bin/docker[m
+[31m-[m
+[31m-Jetzt weiß man:[m
+[31m-[m
+[31m-Nicht irgendein Paket,[m
+[31m-[m
+[31m-sondern[m
+[31m-[m
+[31m-docker-cli[m
+[31m-[m
+[31m-liefert dieses Binary.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Paketinformationen[m
+[31m-[m
+[31m-apt show docker.io[m
+[31m-[m
+[31m-oder[m
+[31m-[m
+[31m-apt-cache policy docker.io[m
+[31m-[m
+[31m-Dadurch sieht man:[m
+[31m-[m
+[31m-- Version[m
+[31m-- Repository[m
+[31m-- Priorität[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Welche Versionen existieren?[m
+[31m-[m
+[31m-apt-cache madison docker.io[m
+[31m-[m
+[31m-oder[m
+[31m-[m
+[31m-apt-cache policy docker.io[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Paket suchen[m
+[31m-[m
+[31m-apt search docker[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Welche Repositorys werden verwendet?[m
+[31m-[m
+[31m-ls /etc/apt/sources.list.d/[m
+[31m-[m
+[31m-cat /etc/apt/sources.list[m
+[31m-[m
+[31m-Beispiele[m
+[31m-[m
+[31m-docker.list[m
+[31m-[m
+[31m-microsoft.list[m
+[31m-[m
+[31m-hashicorp.list[m
+[31m-[m
+[31m-debian.sources[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Paketquellen aktualisieren[m
+[31m-[m
+[31m-sudo apt update[m
+[31m-[m
+[31m-Dadurch werden[m
+[31m-[m
+[31m-NICHT[m
+[31m-[m
+[31m-die Pakete aktualisiert.[m
+[31m-[m
+[31m-Es werden nur die Paketlisten neu geladen.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Pakete aktualisieren[m
+[31m-[m
+[31m-sudo apt upgrade[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Architektur anzeigen[m
+[31m-[m
+[31m-dpkg --print-architecture[m
+[31m-[m
+[31m-Beispiel[m
+[31m-[m
+[31m-amd64[m
+[31m-[m
+[31m-arm64[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Typischer Debugging Ablauf[m
+[31m-[m
+[31m-Problem[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Version prüfen[m
+[31m-[m
+[31m-docker --version[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Programm finden[m
+[31m-[m
+[31m-which docker[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Paket finden[m
+[31m-[m
+[31m-dpkg -S $(which docker)[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Installierte Pakete prüfen[m
+[31m-[m
+[31m-dpkg -l | grep docker[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Distribution prüfen[m
+[31m-[m
+[31m-cat /etc/os-release[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Repository prüfen[m
+[31m-[m
+[31m-apt-cache policy docker.io[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Repositorys prüfen[m
+[31m-[m
+[31m-ls /etc/apt/sources.list.d/[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-Erst jetzt Änderungen vornehmen.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Unser Beispiel[m
+[31m-[m
+[31m-Host[m
+[31m-[m
+[31m-Debian 13[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker-cli 26[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker-compose 2.26[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker buildx[m
+[31m-[m
+[31m-----------------------------------[m
+[31m-[m
+[31m-Container[m
+[31m-[m
+[31m-Debian 12[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker.io 20[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker-compose 1.29[m
+[31m-[m
+[31m-----------------------------------[m
+[31m-[m
+[31m-Problem[m
+[31m-[m
+[31m-docker compose[m
+[31m-[m
+[31m-existiert nicht.[m
+[31m-[m
+[31m-Nicht weil Docker kaputt war.[m
+[31m-[m
+[31m-Sondern weil unterschiedliche Pakete[m
+[31m-aus unterschiedlichen Repositorys installiert wurden.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Lösung[m
+[31m-[m
+[31m-Nicht das Debian Repository verwenden.[m
+[31m-[m
+[31m-Sondern[m
+[31m-[m
+[31m-Docker Official Repository.[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker-ce-cli[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker-buildx-plugin[m
+[31m-[m
+[31m-↓[m
+[31m-[m
+[31m-docker-compose-plugin[m
+[31m-[m
+[31m-Dadurch erhält jede Maschine dieselben Versionen.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# DevOps Regel[m
+[31m-[m
+[31m-Nicht fragen:[m
+[31m-[m
+[31m-"Wie installiere ich Paket X?"[m
+[31m-[m
+[31m-Sondern fragen:[m
+[31m-[m
+[31m-- Welche Version brauche ich?[m
+[31m-- Woher kommt sie?[m
+[31m-- Ist sie reproduzierbar?[m
+[31m-- Wird DEV, TEST und PROD identisch sein?[m
+[31m-[m
+[31m-Das ist reproduzierbare Infrastruktur.[m
+[1mdiff --git a/Meine-Guides/Linux/SSH-Key-Guide.md b/Meine-Guides/Linux/SSH-Key-Guide.md[m
+[1mdeleted file mode 100644[m
+[1mindex a1df22c..0000000[m
+[1m--- a/Meine-Guides/Linux/SSH-Key-Guide.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,9 +0,0 @@[m
+[31m-# SSH Key erstellen & vorhandene prüfen:[m
+[31m-[m
+[31m-ls -la ~/.ssh[m
+[31m-[m
+[31m-- key prüfen[m
+[31m-[m
+[31m-ssh-copy-id -i ~/.ssh/id_ed000000.pub renattest@<TEST-IP>[m
+[31m-[m
+[31m-- vorhanden Key für einen weiteren SSH Server erstellen[m
+[1mdiff --git a/Meine-Guides/Linux/Tmux.md b/Meine-Guides/Linux/Tmux.md[m
+[1mdeleted file mode 100644[m
+[1mindex dc974a2..0000000[m
+[1m--- a/Meine-Guides/Linux/Tmux.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,13 +0,0 @@[m
+[31m-# create Verikal windoww[m
+[31m-[m
+[31m-Ctrl + B danach shift + %[m
+[31m-[m
+[31m-# create horizonatal[m
+[31m-[m
+[31m-Ctrl + b danach Shift + "[m
+[31m-[m
+[31m-# window tötetn [m
+[31m-[m
+[31m-Crtl + b danach x danach y [m
+[31m-[m
+[31m-[m
+[1mdiff --git a/Meine-Guides/Monitoring/Monitoring.md b/Meine-Guides/Monitoring/Monitoring.md[m
+[1mdeleted file mode 100644[m
+[1mindex 7259ba4..0000000[m
+[1m--- a/Meine-Guides/Monitoring/Monitoring.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,436 +0,0 @@[m
+[31m-# Monitoring[m
+[31m-[m
+[31m-## CPU Busy[m
+[31m-[m
+[31m-Wie viel Prozent der CPU gerade arbeitet[m
+[31m-* 0-30% Normal[m
+[31m-* 30-70% Beobachten [m
+[31m-* 70-90% Verdächtig[m
+[31m-* 90%+ Kritisch[m
+[31m-[m
+[31m-* Bsp: "apt update" CPU steigt - Normal[m
+[31m-* "find / -type f" CPU steigt - Normal[m
+[31m-[m
+[31m-## System load[m
+[31m-[m
+[31m-Wie viele Prozesse auf CPU oder I/O warten[m
+[31m-[m
+[31m-* Bsp: 2 Kerne[m
+[31m-* Load: 0.5 - alles entspannt[m
+[31m-* Load: 2.0 - CPU voll ausgelastet[m
+[31m-* Load:10.0 - Katastrophe - 8 Prozesse warten permanent[m
+[31m-[m
+[31m-## RAM Used[m
+[31m-[m
+[31m-Arbeitspeicher Nutzung[m
+[31m-[m
+[31m-## SWAP Nutzung[m
+[31m-[m
+[31m-Wenn RAN voll wird > SWAP, Swap liegt auf Disk (langsam)[m
+[31m-* 0% - Gut[m
+[31m-* 10-20% - Beobachten[m
+[31m-* 50%+ - Problematisch [m
+[31m-[m
+[31m-## Root FS Used[m
+[31m-[m
+[31m-Wie voll ist das Linux-Dateisystem[m
+[31m-[m
+[31m-## Network Traffic[m
+[31m-[m
+[31m-eingehender und ausgehender Traffic[m
+[31m-[m
+[31m-## Pressure[m
+[31m-[m
+[31m-PSI = Pressure Stall Information[m
+[31m-* CPU, RAM, I/0 Druck [m
+[31m-* > wie Stark Prozesse warten müssen[m
+[31m-[m
+[31m-## Uptime[m
+[31m-[m
+[31m-Wie lange läuft der Server[m
+[31m-[m
+[31m-## Was überwacht ein Devops wirklich?[m
+[31m-[m
+[31m-Morgens :[m
+[31m-* 1) Alerts prüfen: Disk voll? Server down? CPU kritisch? [m
+[31m-* 2) Grafana anschauen: CPU, RAM, Load, Storage[m
+[31m-* 3) Logs: Brauchen wir mehr RAM? mehr CPU? Mehr Storage?[m
+[31m-[m
+[31m-## Logs[m
+[31m-[m
+[31m-journalctl [m
+[31m-* System Logs[m
+[31m-[m
+[31m-jouurnalctl -b[m
+[31m-* aktuelle Boot Logs [m
+[31m-[m
+[31m-journalctl -p err[m
+[31m-* Letzte Fehler[m
+[31m-[m
+[31m-journalctl -f [m
+[31m-* Live Logs [m
+[31m-[m
+[31m-## Docker Logs[m
+[31m-[m
+[31m-docker logs Containername[m
+[31m-docker logs -f Containername[m
+[31m-[m
+[31m-## System Load[m
+[31m-[m
+[31m-uptime[m
+[31m-* somit kriegen wir die Load-Werte[m
+[31m-* 2 Kerne:[m
+[31m-* Bsp: Load 0.5 > CPU ist größtenteils entspannt[m
+[31m-* Bsp: Load 2.0 > beide Kerne haben arbeit[m
+[31m-* Bsp: Load 4.0 > beide Kerne arbeiten und zusätzlich warten Prozesse[m
+[31m-[m
+[31m-Rechnung mit Grafana Zahlen:[m
+[31m-* Bsp: Load= 0.18, CPU = 2 Kerne > 0.18 : 2 = 0.09 = 9% [m
+[31m-* Deswegen immer für extra Monitoring am Server[m
+[31m-cat /proc/loadavg[m
+[31m-uptime[m
+[31m-[m
+[31m-# Linux Log Analyse Cheat Sheet[m
+[31m-[m
+[31m-# Grundprinzip[m
+[31m-[m
+[31m-Logs bestehen aus:[m
+[31m-[m
+[31m-Zeitstempel[m
+[31m-↓[m
+[31m-Service[m
+[31m-↓[m
+[31m-Severity[m
+[31m-↓[m
+[31m-Nachricht[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-Jun 18 12:00:00 sshd:[m
+[31m-Accepted password for renatubuntu[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Die wichtigste Regel[m
+[31m-[m
+[31m-Niemals:[m
+[31m-[m
+[31m-journalctl[m
+[31m-[m
+[31m-machen.[m
+[31m-[m
+[31m-Zu viel Müll.[m
+[31m-[m
+[31m-Immer filtern.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Service Logs[m
+[31m-[m
+[31m-Docker[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u docker[m
+[31m-```[m
+[31m-[m
+[31m-SSH[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u ssh[m
+[31m-```[m
+[31m-[m
+[31m-Network[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u systemd-networkd[m
+[31m-```[m
+[31m-[m
+[31m-Nginx Service[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u nginx[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Nur Fehler[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -p err[m
+[31m-```[m
+[31m-[m
+[31m-Bedeutung:[m
+[31m-[m
+[31m-p = priority[m
+[31m-[m
+[31m-err = Fehler[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-Nur Docker Fehler[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u docker -p err[m
+[31m-```[m
+[31m-[m
+[31m-Nur SSH Fehler[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u ssh -p err[m
+[31m-```[m
+[31m-[m
+[31m-Nur Netzwerk Fehler[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u systemd-networkd -p err[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Zeitfilter[m
+[31m-[m
+[31m-Heute[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl --since today[m
+[31m-```[m
+[31m-[m
+[31m-Letzte Stunde[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl --since "1 hour ago"[m
+[31m-```[m
+[31m-[m
+[31m-Seit 09:00[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl --since "09:00"[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Kombinationen[m
+[31m-[m
+[31m-Docker Fehler von heute[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u docker -p err --since today[m
+[31m-```[m
+[31m-[m
+[31m-SSH Fehler letzte Stunde[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u ssh -p err --since "1 hour ago"[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Letzte Zeilen[m
+[31m-[m
+[31m-Letzte 20[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -n 20[m
+[31m-```[m
+[31m-[m
+[31m-Letzte 100[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -n 100[m
+[31m-```[m
+[31m-[m
+[31m-Docker letzte 50[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u docker -n 50[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Live Logs[m
+[31m-[m
+[31m-System[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -f[m
+[31m-```[m
+[31m-[m
+[31m-Docker[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u docker -f[m
+[31m-```[m
+[31m-[m
+[31m-SSH[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl -u ssh -f[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# grep benutzen[m
+[31m-[m
+[31m-Error suchen[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl | grep -i error[m
+[31m-```[m
+[31m-[m
+[31m-Failed suchen[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl | grep -i failed[m
+[31m-```[m
+[31m-[m
+[31m-Docker suchen[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl | grep -i docker[m
+[31m-```[m
+[31m-[m
+[31m-SSH suchen[m
+[31m-[m
+[31m-```bash[m
+[31m-journalctl | grep -i ssh[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Docker Logs[m
+[31m-[m
+[31m-Container Logs anzeigen[m
+[31m-[m
+[31m-```bash[m
+[31m-docker logs CONTAINER[m
+[31m-```[m
+[31m-[m
+[31m-Live Logs[m
+[31m-[m
+[31m-```bash[m
+[31m-docker logs -f CONTAINER[m
+[31m-```[m
+[31m-[m
+[31m-Letzte 50 Zeilen[m
+[31m-[m
+[31m-```bash[m
+[31m-docker logs --tail 50 CONTAINER[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Docker + grep[m
+[31m-[m
+[31m-Errors suchen[m
+[31m-[m
+[31m-```bash[m
+[31m-docker logs CONTAINER 2>&1 | grep -i error[m
+[31m-```[m
+[31m-[m
+[31m-Warnungen suchen[m
+[31m-[m
+[31m-```bash[m
+[31m-docker logs CONTAINER 2>&1 | grep -i warn[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Analyse Workflow[m
+[31m-[m
+[31m-Server Problem[m
+[31m-↓[m
+[31m-Grafana Alert[m
+[31m-↓[m
+[31m-Welcher Service?[m
+[31m-↓[m
+[31m-journalctl -u SERVICE -p err[m
+[31m-↓[m
+[31m-docker logs CONTAINER[m
+[31m-↓[m
+[31m-Root Cause finden[m
+[31m-↓[m
+[31m-Fixen[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Typische Interpretation[m
+[31m-[m
+[31m-Docker[m
+[31m-[m
+[31m-"Daemon has completed initialization"[m
+[31m-[m
+[31m-→ Docker erfolgreich gestartet[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-SSH[m
+[31m-[m
+[31m-"Accepted password"[m
+[31m-[m
+[31m-→ Login erfolgreich[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-SSH[m
+[31m-[m
+[31m-"Failed password"[m
+[31m-[m
+[31m-→ Login fehlgeschlagen[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-Network[m
+[31m-[m
+[31m-"DHCP lease acquired"[m
+[31m-[m
+[31m-→ IP erfolgreich erhalten[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-Network[m
+[31m-[m
+[31m-"DHCP lease lost"[m
+[31m-[m
+[31m-→ Verbindung verloren[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Was ist wirklich kritisch?[m
+[31m-[m
+[31m-Kritisch:[m
+[31m-[m
+[31m-error[m
+[31m-failed[m
+[31m-panic[m
+[31m-crash[m
+[31m-out of memory[m
+[31m-segmentation fault[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-Normal:[m
+[31m-[m
+[31m-Accepted password[m
+[31m-Started service[m
+[31m-Stopped service[m
+[31m-DHCP acquired[m
+[31m-Container started[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# DevOps Regel[m
+[31m-[m
+[31m-Nicht 10.000 Zeilen lesen.[m
+[31m-[m
+[31m-Erst filtern.[m
+[31m-[m
+[31m-Dann analysieren.[m
+[31m-[m
+[31m-ps aux --sort=-%cpu | head[m
+[31m-- Top CPU Prozesse [m
+[31m-[m
+[31m-docker logs docker-compose-cadvisor-1 | grep -A 10 cpu[m
+[31m-- zeige 10 Logs nach dem Wort Cpu[m
+[31m-[m
+[31m-stat -fc %T /sys/fs/cgroup[m
+[31m-- Zeige mir den Typ des Dateisystems, welches hinter /sys/fs/cgroup liegt[m
+\ No newline at end of file[m
+[1mdiff --git a/Meine-Guides/Virtualization/Proxmox.md b/Meine-Guides/Virtualization/Proxmox.md[m
+[1mdeleted file mode 100644[m
+[1mindex 3d4796e..0000000[m
+[1m--- a/Meine-Guides/Virtualization/Proxmox.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,220 +0,0 @@[m
+[31m-# LVM Storage Expansion Cheat Sheet[m
+[31m-[m
+[31m-## Szenario[m
+[31m-[m
+[31m-Die virtuelle Festplatte wurde in Proxmox, VMware oder Hyper-V vergrößert.[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-* Vorher: 30 GB[m
+[31m-* Nachher: 100 GB[m
+[31m-[m
+[31m-Linux verwendet aber weiterhin nur die ursprüngliche Größe.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 1. Aktuellen Zustand prüfen[m
+[31m-[m
+[31m-## Festplatten und Partitionen anzeigen[m
+[31m-[m
+[31m-```bash[m
+[31m-lsblk[m
+[31m-```[m
+[31m-[m
+[31m-Zeigt:[m
+[31m-[m
+[31m-* Festplatten (sda, sdb ...)[m
+[31m-* Partitionen (sda1, sda2, sda3 ...)[m
+[31m-* LVM Volumes[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```text[m
+[31m-sda     100G[m
+[31m-└─sda3   30G[m
+[31m-```[m
+[31m-[m
+[31m-Festplatte ist größer als die Partition.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## Dateisystem prüfen[m
+[31m-[m
+[31m-```bash[m
+[31m-df -h[m
+[31m-```[m
+[31m-[m
+[31m-Zeigt:[m
+[31m-[m
+[31m-* Größe des Dateisystems[m
+[31m-* Verwendeten Speicher[m
+[31m-* Freien Speicher[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```text[m
+[31m-/dev/mapper/ubuntu--vg-ubuntu--lv[m
+[31m-30G[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## LVM prüfen[m
+[31m-[m
+[31m-### Physical Volumes[m
+[31m-[m
+[31m-```bash[m
+[31m-sudo pvs[m
+[31m-```[m
+[31m-[m
+[31m-Zeigt:[m
+[31m-[m
+[31m-* Physische Datenträger für LVM[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-### Volume Groups[m
+[31m-[m
+[31m-```bash[m
+[31m-sudo vgs[m
+[31m-```[m
+[31m-[m
+[31m-Zeigt:[m
+[31m-[m
+[31m-* Gesamten Speicherpool[m
+[31m-* Freien Speicher im Pool[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-### Logical Volumes[m
+[31m-[m
+[31m-```bash[m
+[31m-sudo lvs[m
+[31m-```[m
+[31m-[m
+[31m-Zeigt:[m
+[31m-[m
+[31m-* Die eigentlichen Volumes[m
+[31m-* Größe der Volumes[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 2. Partition erweitern[m
+[31m-[m
+[31m-```bash[m
+[31m-sudo growpart /dev/sda 3[m
+[31m-```[m
+[31m-[m
+[31m-Bedeutung:[m
+[31m-[m
+[31m-* /dev/sda = Festplatte[m
+[31m-* 3 = Partition Nummer 3[m
+[31m-[m
+[31m-Aufgabe:[m
+[31m-[m
+[31m-Vergrößert die Partition auf den maximal verfügbaren Speicher.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 3. LVM Physical Volume erweitern[m
+[31m-[m
+[31m-```bash[m
+[31m-sudo pvresize /dev/sda3[m
+[31m-```[m
+[31m-[m
+[31m-Aufgabe:[m
+[31m-[m
+[31m-LVM erkennt jetzt die neue Größe der Partition.[m
+[31m-[m
+[31m-Kontrolle:[m
+[31m-[m
+[31m-```bash[m
+[31m-sudo pvs[m
+[31m-```[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-```text[m
+[31m-PSize 100G[m
+[31m-PFree 70G[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 4. Logical Volume erweitern[m
+[31m-[m
+[31m-```bash[m
+[31m-sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv -r[m
+[31m-```[m
+[31m-[m
+[31m-Bedeutung:[m
+[31m-[m
+[31m-* +100%FREE = gesamten freien Speicher verwenden[m
+[31m-* -r = Dateisystem automatisch mit erweitern[m
+[31m-[m
+[31m-Aufgabe:[m
+[31m-[m
+[31m-Freien Speicher aus der Volume Group dem Root-Dateisystem zuweisen.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# 5. Ergebnis prüfen[m
+[31m-[m
+[31m-```bash[m
+[31m-df -h[m
+[31m-```[m
+[31m-[m
+[31m-Beispiel:[m
+[31m-[m
+[31m-Vorher:[m
+[31m-[m
+[31m-```text[m
+[31m-30G[m
+[31m-```[m
+[31m-[m
+[31m-Nachher:[m
+[31m-[m
+[31m-```text[m
+[31m-99G[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Merksatz[m
+[31m-[m
+[31m-Storage-Erweiterung mit LVM:[m
+[31m-[m
+[31m-Disk[m
+[31m-↓[m
+[31m-Partition[m
+[31m-↓[m
+[31m-PV (Physical Volume)[m
+[31m-↓[m
+[31m-VG (Volume Group)[m
+[31m-↓[m
+[31m-LV (Logical Volume)[m
+[31m-↓[m
+[31m-Filesystem[m
+[31m-[m
+[31m-Wenn eine Disk größer wird:[m
+[31m-[m
+[31m-1. growpart[m
+[31m-2. pvresize[m
+[31m-3. lvextend[m
+[31m-4. df -h prüfen[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-# Schnellversion[m
+[31m-[m
+[31m-```bash[m
+[31m-lsblk[m
+[31m-[m
+[31m-sudo growpart /dev/sda 3[m
+[31m-[m
+[31m-sudo pvresize /dev/sda3[m
+[31m-[m
+[31m-sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv -r[m
+[31m-[m
+[31m-df -h[m
+[31m-```[m
+[1mdiff --git a/cicd-stack/.env b/cicd-stack/.env[m
+[1mdeleted file mode 100644[m
+[1mindex f0d55f8..0000000[m
+[1m--- a/cicd-stack/.env[m
+[1m+++ /dev/null[m
+[36m@@ -1,7 +0,0 @@[m
+[31m-INSTANCE_URL=http://192.168.0.180:3001[m
+[31m-[m
+[31m-REGISTRATION_TOKEN=9FpEsC31WqfvL6Tz9PvzRPu67WWY3WQocqSodZWQ[m
+[31m-[m
+[31m-RUNNER_NAME=debian-runner[m
+[31m-[m
+[31m-RUNNER_LABELS=ubuntu-latest[m
+[1mdiff --git a/cicd-stack/config.yaml b/cicd-stack/config.yaml[m
+[1mdeleted file mode 100644[m
+[1mindex 64cf04b..0000000[m
+[1m--- a/cicd-stack/config.yaml[m
+[1m+++ /dev/null[m
+[36m@@ -1,85 +0,0 @@[m
+[31m-[m
+[31m-log:[m
+[31m-  [m
+[31m-  level: info[m
+[31m-[m
+[31m-runner:[m
+[31m-  [m
+[31m-  file: .runner[m
+[31m- [m
+[31m-  capacity: 1[m
+[31m-  [m
+[31m-  envs:[m
+[31m-    A_TEST_ENV_NAME_1: a_test_env_value_1[m
+[31m-    A_TEST_ENV_NAME_2: a_test_env_value_2[m
+[31m- [m
+[31m-  env_file: .env[m
+[31m-  [m
+[31m-  timeout: 3h[m
+[31m-[m
+[31m-  shutdown_timeout: 0s[m
+[31m- [m
+[31m-  insecure: false[m
+[31m-  [m
+[31m-  fetch_timeout: 5s[m
+[31m-  [m
+[31m-  fetch_interval: 2s[m
+[31m-  [m
+[31m-  fetch_interval_max: 5s[m
+[31m-  [m
+[31m-  log_report_interval: 5s[m
+[31m-  [m
+[31m-  log_report_max_latency: 3s[m
+[31m-  [m
+[31m-  log_report_batch_size: 100[m
+[31m-  [m
+[31m-  state_report_interval: 5s[m
+[31m-  [m
+[31m-  github_mirror: ''[m
+[31m-  [m
+[31m-  labels:[m
+[31m-  - "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"[m
+[31m-[m
+[31m-cache:[m
+[31m-  [m
+[31m-  enabled: true[m
+[31m-  [m
+[31m-  dir: ""[m
+[31m- [m
+[31m-  host: ""[m
+[31m-  [m
+[31m-  port: 0[m
+[31m-  [m
+[31m-  external_server: ""[m
+[31m- [m
+[31m-  external_secret: ""[m
+[31m-[m
+[31m-container:[m
+[31m-  network: bridge[m
+[31m-  privileged: false[m
+[31m-  options:[m
+[31m-  valid_volumes:[m
+[31m-    - /var/run/docker.sock[m
+[31m-  workdir_parent:[m
+[31m- [m
+[31m-  docker_host: ""[m
+[31m-  [m
+[31m-  force_pull: false[m
+[31m- [m
+[31m-  force_rebuild: false[m
+[31m-  [m
+[31m-  require_docker: false[m
+[31m- [m
+[31m-  docker_timeout: 0s[m
+[31m-[m
+[31m-  bind_workdir: false[m
+[31m-[m
+[31m-host:[m
+[31m- [m
+[31m-  workdir_parent:[m
+[31m-[m
+[31m-metrics:[m
+[31m-  [m
+[31m-  enabled: false[m
+[31m-[m
+[31m-  addr: "127.0.0.1:9101"[m
+[1mdiff --git a/cicd-stack/data/.runner b/cicd-stack/data/.runner[m
+[1mdeleted file mode 100644[m
+[1mindex 0fb431d..0000000[m
+[1m--- a/cicd-stack/data/.runner[m
+[1m+++ /dev/null[m
+[36m@@ -1,12 +0,0 @@[m
+[31m-{[m
+[31m-  "WARNING": "This file is automatically generated by act-runner. Do not edit it manually unless you know what you are doing. Removing this file will cause act runner to re-register as a new runner.",[m
+[31m-  "id": 1,[m
+[31m-  "uuid": "9a4f94c4-3fb2-43a8-a156-4ab84d370d61",[m
+[31m-  "name": "debian-runner",[m
+[31m-  "token": "55c98a15f06fa50b0254fd993ecc27b2fe26b9ad",[m
+[31m-  "address": "http://192.168.0.180:3001",[m
+[31m-  "labels": [[m
+[31m-    "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"[m
+[31m-  ],[m
+[31m-  "ephemeral": false[m
+[31m-}[m
