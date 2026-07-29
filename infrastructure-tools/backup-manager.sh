@@ -1,6 +1,12 @@
 #!/bin/bash
 
-BACKUP_DIR="/home/renatubuntu/documentation/backups"
+#################################
+# Paths
+#################################
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+BACKUP_DIR="$PROJECT_ROOT/backups"
 
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 
@@ -18,7 +24,7 @@ echo
 echo "Creating BookStack backup..."
 
 tar -czf "$BACKUP_DIR/bookstack-app-$DATE.tar.gz" \
-/home/renatubuntu/documentation/documentation-stack/bookstack-app
+"$PROJECT_ROOT/documentation-stack/bookstack-app"
 
 BOOKSTACK_STATUS=$?
 
@@ -28,7 +34,9 @@ BOOKSTACK_STATUS=$?
 
 echo "Creating MariaDB backup..."
 
-docker exec docker-compose2-mariadb-datenbank-1 \
+cd "$PROJECT_ROOT/documentation-stack" || exit 1
+
+docker compose exec -T mariadb-datenbank \
 sh -c 'mariadb-dump -u root -p"$MARIADB_ROOT_PASSWORD" bootstackdb' \
 > "$BACKUP_DIR/bookstack-db-$DATE.sql"
 
@@ -40,7 +48,9 @@ MARIADB_STATUS=$?
 
 echo "Creating PostgreSQL backup..."
 
-docker exec docker-compose3-postgres-1 \
+cd "$PROJECT_ROOT/git-platform" || exit 1
+
+docker compose exec -T postgres \
 pg_dump -U gitea gitea \
 > "$BACKUP_DIR/gitea-db-$DATE.sql"
 
@@ -82,17 +92,11 @@ if [ $BOOKSTACK_STATUS -eq 0 ] && \
    [ $MARIADB_STATUS -eq 0 ] && \
    [ $POSTGRES_STATUS -eq 0 ]
 then
-
     echo "Overall Status : SUCCESS"
     echo "======================================"
-
     exit 0
-
 else
-
     echo "Overall Status : FAILED"
     echo "======================================"
-
     exit 1
-
 fi

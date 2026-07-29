@@ -1,300 +1,341 @@
-# Linux DevOps Homelab
+# 🐧 Linux DevOps Homelab
 
-Personal Infrastructure Lab focused on Linux System Administration, Docker, Monitoring and modern DevOps practices.
+> Persönliches Linux-, Infrastruktur- und DevOps-Homelab mit Fokus auf modernen Enterprise-Standards, Automatisierung und reproduzierbarer Infrastruktur.
 
-## Current Infrastructure
+---
 
-- ✅ Ubuntu Server running on Proxmox VE
-- ✅ 5 Docker Compose projects
-- ✅ Prometheus + Grafana Monitoring
-- ✅ BookStack + MariaDB
-- ✅ Gitea + PostgreSQL
-- ✅ Nginx Reverse Proxy
-- ✅ Bash Infrastructure Automation
-- ✅ GitHub + Self-hosted Gitea
-- ✅ Backup & Restore concepts
-- 🚧 CI/CD (planned)
-- 🚧 Ansible (planned)
-- 🚧 Terraform (planned)
+# 🎯 Projektziel
 
-# Current Infrastructure
+Dieses Homelab begleitet meinen persönlichen Weg vom IT-Support in Richtung Linux System Administration und DevOps.
 
-# Architecture Overview
+Das Ziel besteht nicht darin, möglichst viele Docker-Container zu betreiben, sondern den Aufbau einer professionellen, wartbaren und reproduzierbaren Infrastruktur zu erlernen.
+
+Dabei werden alle Komponenten zunächst manuell aufgebaut, verstanden, dokumentiert und anschließend schrittweise automatisiert.
+
+---
+
+# 📊 Projektstatus
+
+| Bereich | Status |
+|----------|:------:|
+| Linux Administration | ✅ |
+| Docker | ✅ |
+| Docker Compose | ✅ |
+| Monitoring | ✅ |
+| Reverse Proxy | ✅ |
+| GitHub | ✅ |
+| Self-hosted Gitea | ✅ |
+| Bash Automation | ✅ |
+| Backup & Restore | ✅ |
+| DEV Umgebung | 🔄 |
+| TEST Umgebung | 🔄 |
+| Ansible | 📅 |
+| CI/CD | 📅 |
+| Terraform | 📅 |
+| Kubernetes | 📅 |
+
+---
+
+# 🖥️ Aktuelle Infrastruktur
+
+## Betriebssysteme
+
+- Ubuntu Server (Proxmox VM)
+- Debian Workstation
+
+## Infrastruktur
+
+- 📈 Monitoring Stack
+- 📚 Dokumentationsplattform
+- 🗂️ Self-hosted Git Plattform
+- 🌐 Reverse Proxy
+- 💻 Eigener Webserver
+- ⚙️ Bash Automatisierung
+- ☁️ GitHub
+- 🏠 Self-hosted Gitea
+
+---
+
+# 🏗️ Architektur
 
 ```text
-                                         Internet
-                                             │
-                                             │
-                                      Ubuntu Server
-                                   (Proxmox Virtual Machine)
-                                             │
-                                             │
-                                      Docker Engine
-                                             │
-         ┌────────────────────┬────────────────────┬────────────────────┐
-         │                    │                    │
-         │                    │                    │
-   Monitoring          Documentation            Git Platform
-         │                    │                    │
-         │                    │                    │
-   Prometheus           BookStack               Gitea
-   Grafana              MariaDB             PostgreSQL
-   Node Exporter
-   cAdvisor
-         │
-         │
- Reverse Proxy (Nginx)
-         │
-         │
- ─────────────────────────────────────────────────────────────────────────────
+                                    Internet
+                                        │
+                                        │
+                                Ubuntu Server
+                             (Proxmox Virtual Machine)
+                                        │
+                                 Docker Engine
+                                        │
+      ┌───────────────┬────────────────┬────────────────┬───────────────┐
+      │               │                │                │
+ Monitoring     Dokumentation      Git Plattform     Reverse Proxy
+      │               │                │                │
+ Prometheus      BookStack         Gitea            Nginx
+ Grafana         MariaDB           PostgreSQL
+ Node Exporter
+ cAdvisor
 
-             Debian Workstation (Future Automation Runner)
-                           │
-                           ├── Git Development
-                           ├── CI/CD Runner (planned)
-                           ├── Ansible Control Node (planned)
-                           └── Infrastructure Management
 
-             Ubuntu Laptop (Monitoring Client)
-                           │
-                           └── Zabbix Agent
-                                 │
-                                 └── Monitoring Proxmox Host
+                Debian Workstation (Entwicklungsumgebung)
+
+                       Git
+                       Bash
+                       Ansible (geplant)
+                       CI/CD (geplant)
 ```
 
-## Monitoring Stack
+---
 
-Services
+# 📦 Infrastruktur
+
+## 📈 Monitoring Stack
+
+### Dienste
 
 - Prometheus
 - Grafana
 - Node Exporter
 - cAdvisor
 
-Topics
+### Erlernte Themen
 
 - Docker Compose
 - Docker Networking
-- Host Monitoring
-- Metrics Collection
+- Monitoring
 - Dashboards
+- Metriken
 - Container Monitoring
 
 ---
 
-## Documentation Stack
+## 📚 Dokumentationsplattform
 
-Services
+### Dienste
 
 - BookStack
 - MariaDB
 
-Topics
+### Erlernte Themen
 
-- Docker Compose
+- Persistente Daten
 - Bind Mounts
-- Persistent Storage
-- Environment Variables
 - Reverse Proxy
+- Environment Variablen
 - MariaDB
-- Laravel Applications
 
 ---
 
-## Git Platform
+## 🗂️ Git Plattform
 
-Services
+### Dienste
 
 - Gitea
 - PostgreSQL
 
-Topics
+### Erlernte Themen
 
 - Self-hosted Git
 - PostgreSQL
 - Repository Management
-- Docker Networking
+- Docker Netzwerke
 
 ---
 
-## Reverse Proxy
+## 🌐 Reverse Proxy
 
-Services
+### Dienste
 
 - Nginx
 
-Topics
+### Erlernte Themen
 
 - Reverse Proxy
 - Docker DNS
-- Container Communication
-- Virtual Hosts
-- Nginx Configuration
+- Virtuelle Hosts
+- Container Kommunikation
 
 ---
 
-# Infrastructure Automation
+# ⚙️ Infrastruktur-Automatisierung
 
-Current Scripts
+Eigene Bash-Werkzeuge:
 
-- compose-manager.sh
-- docker-status.sh
+- backup-manager.sh
+- restore-manager.sh
 - healthcheck.sh
-
-Topics
-
-- Bash
-- Infrastructure Automation
-- Health Checks
-- Service Management
+- stack-manager.sh
+- docker-status.sh
+- system-report.sh
 
 ---
 
-# Repository Structure
+# ✅ Sprint 1 – Infrastruktur standardisiert
 
-```
+Der erste Sprint bestand bewusst **nicht** darin, weitere Software zu installieren.
+
+Stattdessen wurde die bestehende Infrastruktur nach Enterprise-Prinzipien überarbeitet.
+
+## Umgesetzte Verbesserungen
+
+- ✅ Einheitliche Repository-Struktur
+- ✅ Portable Docker-Compose-Projekte
+- ✅ Relative Pfade statt harter Verzeichnisse
+- ✅ Standardisierte Bash-Skripte
+- ✅ `.env.example` Vorlagen
+- ✅ Backup- und Restore-Konzept
+- ✅ Health Checks
+- ✅ Infrastruktur-Dokumentation
+- ✅ GitHub und Self-hosted Gitea synchronisiert
+- ✅ Wartbare Projektstruktur geschaffen
+
+### 💡 Ziel dieses Sprints
+
+Eine Infrastruktur aufzubauen, die
+
+- reproduzierbar
+- portabel
+- dokumentiert
+- wartbar
+- und für zukünftige Automatisierung vorbereitet
+
+ist.
+
+Damit ist die Grundlage für Ansible, CI/CD und Infrastructure as Code geschaffen.
+
+---
+
+# 📂 Repository-Struktur
+
+```text
 documentation/
 
-docker-compose/
-docker-compose2/
-docker-compose3/
-docker-compose4/
-docker-compose5/
-
-tools/
-
-nginx-config/
-
-prometheus-config/
-
-DockerDocumentation/
-
-BackUp-Theorie/
-
-README.md
+├── ansible/
+├── monitoring-stack/
+├── documentation-stack/
+├── git-platform/
+├── reverse-proxy/
+├── web-stack/
+├── infrastructure-tools/
+├── configs/
+├── Dockerfiles/
+├── Meine-Guides/
+├── backup-documentation/
+├── backups/
+├── README.md
+└── STACK-STANDARD.md
 ```
 
 ---
 
-# Technologies
+# ⚙️ Technologien
 
-## Operating Systems
+## Betriebssysteme
 
 - Ubuntu Server
 - Debian
 - Proxmox VE
 
-## Containers
+## Container
 
 - Docker
 - Docker Compose
 
 ## Monitoring
 
-- Grafana
 - Prometheus
-- cAdvisor
+- Grafana
 - Node Exporter
+- cAdvisor
 
-## Databases
+## Datenbanken
 
 - MariaDB
 - PostgreSQL
 
-## Web
+## Webserver
 
 - Nginx
 - Reverse Proxy
 
-## Version Control
+## Versionsverwaltung
 
 - Git
 - GitHub
-- Gitea
+- Self-hosted Gitea
 
-## Scripting
+## Automatisierung
 
 - Bash
 
 ---
 
-# Skills Practiced
+# 🧠 Erlernte Technologien
 
 - Linux Administration
 - Docker
 - Docker Compose
-- Docker Networks
-- Bind Mounts
-- Persistent Volumes
+- Docker Netzwerke
 - Reverse Proxy
-- Container Debugging
-- Bash Automation
-- Git
-- GitHub
-- Self-hosted Git
 - Monitoring
-- Backup Strategies
-- Infrastructure Documentation
+- Git
+- Bash
+- Backup & Restore
+- Infrastruktur-Dokumentation
+- Repository-Strukturierung
+- Infrastruktur-Standardisierung
 
 ---
 
-# Current Learning Roadmap
+# 🚀 Roadmap
 
-Completed
+## ✅ Abgeschlossen
 
-- Linux Basics
+- Linux Grundlagen
 - Docker
 - Docker Compose
-- Monitoring Stack
+- Monitoring
 - Reverse Proxy
 - Self-hosted Git
-- Bash Basics
-- Backup Concepts
+- Bash
+- Infrastruktur standardisiert
 
-Currently Learning
+---
 
-- Linux Permissions
-- Infrastructure Automation
+## 🔄 Als Nächstes
+
+- DEV Umgebung
+- TEST Umgebung
 - Git Workflow
-- Advanced Bash
-
-Planned
-
-- CI/CD
 - Ansible
+- CI/CD
+
+---
+
+## 📅 Langfristige Ziele
+
 - Terraform
 - Kubernetes
-- pfSense
 - Infrastructure as Code
 - High Availability
+- Vollautomatische Deployments
 
 ---
 
-# Homelab Philosophy
+# 💡 Projektphilosophie
 
-The purpose of this repository is to understand **why** infrastructure works instead of simply deploying software.
+Dieses Homelab soll nicht nur zeigen, **wie Software installiert wird**, sondern vor allem **wie professionelle Infrastruktur entsteht**.
 
-Every project is built manually, debugged, documented and improved over time to simulate real-world Linux and DevOps administration.
+Der Fokus liegt darauf, Systeme so aufzubauen, dass sie:
 
----
+- 📖 nachvollziehbar
+- 📝 dokumentiert
+- 🔄 reproduzierbar
+- 🛠️ wartbar
+- 🤖 automatisierbar
 
-# Future Goals
+sind.
 
-- Automated deployments
-- Infrastructure as Code
-- CI/CD Pipelines
-- Multi-node Kubernetes Cluster
-- Network Segmentation with pfSense
-- Monitoring Improvements
-- Backup Automation
-- High Availability
+Mein Ziel ist es, die Arbeitsweise eines modernen Linux- und DevOps-Engineers möglichst praxisnah in einem eigenen Homelab nachzubilden.
 
----
-
-# Contact
-
-LinkedIn
-
-GitHub
-
-Always open to feedback, discussions and opportunities related to Linux, Infrastructure and DevOps.
+Jeder Sprint baut auf dem vorherigen auf und orientiert sich an Vorgehensweisen, wie sie auch in professionellen IT-Umgebungen eingesetzt werden.

@@ -1,6 +1,13 @@
 #!/bin/bash
 
-BACKUP_DIR="/home/renatubuntu/documentation/backups"
+#################################
+# Paths
+#################################
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+BACKUP_DIR="$PROJECT_ROOT/backups"
 
 OLD_DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 
@@ -55,19 +62,19 @@ case "$OPTION" in
         echo
         echo "Stopping BookStack..."
 
-        cd /home/renatubuntu/documentation/documentation-stack
+        cd "$PROJECT_ROOT/documentation-stack" || exit 1
         docker compose down
 
         echo
         echo "Saving current BookStack..."
 
-        mv /home/renatubuntu/documentation/documentation-stack/bookstack-app \
-        /home/renatubuntu/documentation/documentation-stack/bookstack-app.old-$OLD_DATE
+        mv "$PROJECT_ROOT/documentation-stack/bookstack-app" \
+           "$PROJECT_ROOT/documentation-stack/bookstack-app.old-$OLD_DATE"
 
         echo
         echo "Restoring backup..."
 
-        tar -xzf "$LATEST_BOOKSTACK" -C /
+        tar -xzf "$LATEST_BOOKSTACK" -C "$PROJECT_ROOT/documentation-stack"
 
         echo
         echo "Starting BookStack..."
@@ -82,7 +89,7 @@ case "$OPTION" in
         echo
         echo "Running Health Check..."
 
-        /home/renatubuntu/documentation/infrastructure-tools/healthcheck.sh
+        "$PROJECT_ROOT/infrastructure-tools/healthcheck.sh"
 
         echo
         echo "======================================"
@@ -110,11 +117,11 @@ case "$OPTION" in
         echo
         echo "Stopping BookStack Stack..."
 
-        cd /home/renatubuntu/documentation/documentation-stack
+        cd "$PROJECT_ROOT/documentation-stack" || exit 1
         docker compose down
 
         echo
-        echo "Importing MariaDB Backup..."
+        echo "Starting MariaDB..."
 
         docker compose up -d mariadb-datenbank
 
@@ -123,7 +130,10 @@ case "$OPTION" in
 
         sleep 10
 
-        docker exec -i documentation-stack-mariadb-datenbank-1 \
+        echo
+        echo "Importing MariaDB Backup..."
+
+        docker compose exec -T mariadb-datenbank \
         sh -c 'mariadb -u root -p"$MARIADB_ROOT_PASSWORD" bootstackdb' \
         < "$LATEST_MARIADB"
 
@@ -142,7 +152,7 @@ case "$OPTION" in
         echo
         echo "Running Health Check..."
 
-        /home/renatubuntu/documentation/infrastructure-tools/healthcheck.sh
+        "$PROJECT_ROOT/infrastructure-tools/healthcheck.sh"
 
         echo
 
@@ -180,7 +190,7 @@ case "$OPTION" in
         echo
         echo "Stopping Gitea Stack..."
 
-        cd /home/renatubuntu/documentation/git-platform
+        cd "$PROJECT_ROOT/git-platform" || exit 1
         docker compose down
 
         echo
@@ -196,9 +206,9 @@ case "$OPTION" in
         echo
         echo "Importing PostgreSQL Backup..."
 
-        docker exec -i git-platform-postgres-1 \
+        docker compose exec -T postgres \
         psql -U gitea gitea \
-        < "$LATEST_POSTGRES" >/dev/null 2>&1
+        < "$LATEST_POSTGRES"
 
         POSTGRES_STATUS=$?
 
@@ -215,7 +225,7 @@ case "$OPTION" in
         echo
         echo "Running Health Check..."
 
-        /home/renatubuntu/documentation/infrastructure-tools/healthcheck.sh
+        "$PROJECT_ROOT/infrastructure-tools/healthcheck.sh"
 
         echo
 

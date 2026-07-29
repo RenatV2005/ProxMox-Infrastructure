@@ -9,7 +9,7 @@ services:
     ports:
      - "3306:3306"
     volumes:
-     - /home/renatubuntu/documentation/documentation-stack/bookstack-mariadb:/var/lib/mysql
+     - ./bookstack-mariadb:/var/lib/mysql
     restart: unless-stopped
     networks:
      - homelab-net
@@ -29,7 +29,7 @@ services:
    ports:
     - "6875:80"
    volumes:
-    - /home/renatubuntu/documentation/documentation-stack/bookstack-app:/config
+    - ./bookstack-app:/config
    restart: unless-stopped
    networks:
     - homelab-net

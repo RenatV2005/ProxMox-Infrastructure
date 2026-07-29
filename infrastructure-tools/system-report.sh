@@ -1,9 +1,20 @@
 #!/bin/bash
 
+#################################
+# Paths
+#################################
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
 echo "======================================"
 echo "        System Report"
 echo "======================================"
 echo
+
+#################################
+# System Information
+#################################
 
 echo "Hostname:"
 hostname
@@ -21,6 +32,10 @@ echo "Uptime:"
 uptime -p
 echo
 
+#################################
+# Hardware Information
+#################################
+
 echo "CPU:"
 lscpu | grep "Model name"
 echo
@@ -33,9 +48,17 @@ echo "Disk Usage:"
 df -h /
 echo
 
+#################################
+# Network Information
+#################################
+
 echo "IP Address:"
 hostname -I
 echo
+
+#################################
+# Docker Information
+#################################
 
 echo "Running Docker Containers:"
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"

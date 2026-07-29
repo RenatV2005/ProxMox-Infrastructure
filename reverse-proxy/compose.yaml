@@ -4,9 +4,10 @@ services:
     ports:
      - "80:80"
     volumes:
-     - /home/renatubuntu/documentation/reverse-proxy/nginx-config:/etc/nginx/conf.d
+     - ./nginx-config:/etc/nginx/conf.d
     networks:
      - reverse-proxy-net
+    restart: unless-stopped
 
 networks:
   reverse-proxy-net:
