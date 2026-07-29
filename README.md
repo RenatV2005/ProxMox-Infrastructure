@@ -339,3 +339,77 @@ sind.
 Mein Ziel ist es, die Arbeitsweise eines modernen Linux- und DevOps-Engineers möglichst praxisnah in einem eigenen Homelab nachzubilden.
 
 Jeder Sprint baut auf dem vorherigen auf und orientiert sich an Vorgehensweisen, wie sie auch in professionellen IT-Umgebungen eingesetzt werden.
+
+# 🚀 Aktueller Fortschritt
+
+## 🖥 Infrastruktur
+
+- Ubuntu Server als zentrale Infrastrukturplattform
+- Docker als Container Runtime
+- Gitea als selbst gehostete Git-Plattform
+- Reverse Proxy mit Nginx
+- Monitoring mit Prometheus, Grafana, Node Exporter und cAdvisor
+- Infrastructure as Code (IaC) mit Ansible
+- Verwendung von Jinja2 Templates zur dynamischen Generierung von Nginx-Konfigurationen
+- Trennung zwischen DEV, TEST und PROD über Ansible Inventory und Host-Variablen
+
+---
+
+# 🔄 CI/CD
+
+## Gitea Actions
+
+Es wurde eine eigene CI/CD-Umgebung auf Basis von **Gitea Actions** aufgebaut.
+
+### Komponenten
+
+- Eigener Gitea Runner auf dem Produktivserver
+- Eigene Docker CI-Image (`ci-image:3.0`)
+- Pipeline-as-Code über `.gitea/workflows`
+- Automatische Ausführung nach jedem Push
+
+### Aktuelle Pipeline
+
+Die erste Pipeline überprüft automatisch:
+
+- Docker Compose Syntax (`docker compose config`)
+- Ansible Playbook Syntax (`ansible-playbook --syntax-check`)
+
+Dadurch werden fehlerhafte Commits bereits während der Continuous Integration erkannt.
+
+---
+
+# 🧩 Verwendete Technologien
+
+- Docker
+- Docker Compose
+- Git
+- Gitea
+- Gitea Actions
+- CI/CD
+- Ansible
+- Jinja2
+- Nginx
+- Prometheus
+- Grafana
+- Node Exporter
+- cAdvisor
+- Linux
+- Bash
+
+---
+
+# 📚 DevOps Konzepte
+
+Während dieses Projekts wurden folgende DevOps-Prinzipien umgesetzt:
+
+- Infrastructure as Code
+- Continuous Integration
+- Git Flow mit Feature Branches
+- Pull Requests
+- Konfigurationsmanagement mit Ansible
+- Wiederverwendbare Templates mit Jinja2
+- Containerisierung
+- Reverse Proxy
+- Monitoring
+- Versionsverwaltung
