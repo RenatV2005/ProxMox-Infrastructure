@@ -1,0 +1,31 @@
+---
+- name: Deploy Nginx Reverse Proxy Configs
+  hosts: all
+  become: false
+
+  tasks:
+
+    - name: Deploy Grafana Nginx Config
+      template:
+        src: ../templates/nginx/grafana.conf.j2
+        dest: "{{ repository_path }}/reverse-proxy/nginx-config/grafana.conf"
+
+    - name: Deploy Gitea Nginx Config
+      template:
+        src: ../templates/nginx/gitea.conf.j2
+        dest: "{{ repository_path }}/reverse-proxy/nginx-config/gitea.conf"
+
+    - name: Deploy Bookstack Nginx Config
+      template:
+        src: ../templates/nginx/bookstack.conf.j2
+        dest: "{{ repository_path }}/reverse-proxy/nginx-config/bookstack.conf"
+
+    - name: Deploy CAdvisor Nginx Config
+      template:
+        src: ../templates/nginx/cadvisor.conf.j2
+        dest: "{{ repository_path }}/reverse-proxy/nginx-config/cadvisor.conf"
+
+    - name: Deploy Nginx Web Nginx Config
+      template:
+        src: ../templates/nginx/nginx-web-server.conf.j2
+        dest: "{{ repository_path }}/reverse-proxy/nginx-config/nginx-web-server.conf"

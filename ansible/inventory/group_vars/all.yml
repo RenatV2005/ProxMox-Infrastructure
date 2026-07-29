@@ -2,4 +2,28 @@ git_repository: "ssh://git@192.168.0.180:2222/gitea/infrastructure.git"
 
 git_branch: "main"
 
-repository_directory: "documentation"
+repository_path: "documentation"
+
+reverse_proxy:
+
+  services:
+
+    grafana:
+      container: grafana-web
+      port: 3000
+
+    gitea:
+      container: gitea
+      port: 3000
+
+    bookstack:
+      container: bookstack-app
+      port: 80
+
+    cadvisor:
+      container: cadvisor
+      port: 8080
+
+    nginx:
+      container: nginx-web-server
+      port: 80
