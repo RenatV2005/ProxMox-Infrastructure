@@ -1,0 +1,18 @@
+gitea:
+
+  web:
+    domain: "gitea.{{ server_environment }}"
+    http_port: 3001
+    ssh_port: 2222
+
+postgres:
+
+  type: postgres
+
+  host: postgres
+  port: 5432
+
+  database:
+    name: gitea
+    user: gitea
+    password: CHANGE_ME

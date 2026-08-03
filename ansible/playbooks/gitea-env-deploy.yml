@@ -1,0 +1,10 @@
+- name: Deploy Gitea .env 
+  hosts: dev, test
+  become: false
+  
+  tasks:
+
+    - name: Deploy Gitea .env
+      template:
+        src: ../templates/gitea/.env.example.j2
+        dest: "{{ repository_path }}/git-platform/.env.example"
