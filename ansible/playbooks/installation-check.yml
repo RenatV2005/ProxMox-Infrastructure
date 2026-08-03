@@ -1,6 +1,6 @@
 ---
 - name: Installiere Docker-Grundumgebung
-  hosts: dev,test
+  hosts: all
   become: true
   gather_facts: false
 
