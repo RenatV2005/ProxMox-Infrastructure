@@ -1,13 +1,22 @@
 ---
-- name: Docker soll laufen und beim booten automatisch starten
+- name: Sicherstellen, dass die benötigten Pakete installiert sind
   hosts: all
+  become: true
   gather_facts: false
 
-  tasks: 
+  tasks:
+    - name: Aktualisiere die Paketliste
+      ansible.builtin.apt:
+        update_cache: true 
+
+    - name: Apt Software Installieren
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages.software.apt }}"
 
     - name: stelle sicher, dass docker gestartet und aktiviert ist
       ansible.builtin.service:
         name: docker
         state: started
         enabled: true
-       

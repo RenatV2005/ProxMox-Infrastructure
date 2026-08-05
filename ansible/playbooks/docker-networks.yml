@@ -1,0 +1,12 @@
+---
+- name: Configure Docker Networks
+  hosts: nonprod
+  become: true
+
+  tasks:
+
+    - name: Ensure Docker networks exist
+      community.docker.docker_network:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      loop: "{{ docker.networks }}"

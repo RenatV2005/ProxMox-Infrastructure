@@ -1,0 +1,15 @@
+docker:
+
+  networks:
+
+    - name: reverse-proxy-net
+      state: present
+
+    - name: homelab-net
+      state: present
+
+  images:
+
+    - name: ci-image
+      tag: "3.0"
+      source: "{{ repository_path }}/Dockerfiles/ci-image"
