@@ -1,0 +1,13 @@
+---
+- name: Build Docker Images
+  hosts: nonprod
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Docker Images bauen
+      community.docker.docker_image_build:
+        name: "{{ item.name }}:{{ item.tag }}"  
+        path: "{{ item.context }}"
+        dockerfile: "{{ item.dockerfile }}"
+        rebuild: "{{ item.rebuild | default('never') }}"
+      loop: "{{ docker.images }}"
