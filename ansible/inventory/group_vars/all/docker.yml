@@ -1,0 +1,52 @@
+docker:
+
+  networks:
+
+    - name: reverse-proxy-net
+      state: present
+
+    - name: homelab-net
+      state: present
+
+  images:
+
+    - name: ci-image
+      tag: "3.0"
+      context: "{{ repository_path }}/Dockerfiles/ci-image"
+      dockerfile: Dockerfile
+      rebuild: always
+
+    - name: renat-nginx
+      tag: "v2"
+      context: "{{ repository_path }}/Dockerfiles/nginx-image"
+      dockerfile: Dockerfile
+
+  stacks:
+
+    - name: monitoring-stack
+      path: "{{ repository_path }}/monitoring-stack"
+      state: present
+
+    - name: git-platform
+      path: "{{ repository_path }}/git-platform"
+      state: present
+
+    - name: documentation-stack
+      path: "{{ repository_path }}/documentation-stack"
+      state: present
+
+    - name: web-stack
+      path: "{{ repository_path }}/web-stack"
+      state: present
+
+  users:
+
+    bind_mounts:
+
+      - path: "{{ repository_path }}/monitoring-stack/grafana-data"
+        owner: "472"
+        group: "472"
+
+      - path: "{{ repository_path }}/monitoring-stack/prometheus-data"
+        owner: "nobody"
+        group: "nogroup"
