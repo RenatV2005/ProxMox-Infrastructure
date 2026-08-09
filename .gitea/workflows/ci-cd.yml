@@ -1,0 +1,124 @@
+name: CI/CD Infrastructure
+
+on:
+  push:
+
+jobs:
+
+  # ============================================================
+  # CI
+  # ============================================================
+
+  validate:
+    name: CI - Validate Infrastructure
+    runs-on: ubuntu-latest
+
+    container:
+      image: ci-image:3.0
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Show Environment
+        run: |
+          echo "===== Environment ====="
+          node --version
+          git --version
+          ansible-playbook --version
+          pwd
+          ls -la
+
+      - name: Validate Docker Compose Stacks
+        run: |
+          set -e
+
+          echo ""
+          echo "===== Docker Compose Validation ====="
+
+          find . -name "compose.yaml" | while read composefile
+          do
+            stackdir=$(dirname "$composefile")
+
+            echo ""
+            echo "======================================"
+            echo "Checking Stack:"
+            echo "$stackdir"
+            echo "======================================"
+
+            (
+              cd "$stackdir"
+              docker compose config > /dev/null
+            )
+
+            echo "SUCCESS: $stackdir"
+          done
+
+          echo ""
+          echo "All Docker Compose files are valid."
+
+      - name: Validate Ansible Playbooks
+        run: |
+          set -e
+
+          echo ""
+          echo "===== Ansible Playbook Validation ====="
+
+          cd ansible/playbooks
+
+          for playbook in *.yml
+          do
+            echo "Checking $playbook"
+
+            ansible-playbook \
+              -i ../inventory/homelab.ini \
+              --syntax-check \
+              "$playbook"
+          done
+
+          echo ""
+          echo "All Ansible Playbooks are valid."
+
+
+  # ============================================================
+  # CD
+  # ============================================================
+
+  deploy:
+    name: CD - Deploy Infrastructure
+    runs-on: ubuntu-latest
+
+    needs:
+      - validate
+
+    if: github.ref == 'refs/heads/main'
+
+    container:
+      image: ci-image:3.0
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          CD_SSH_KEY: ${{ secrets.CD_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          printf '%s\n' "$CD_SSH_KEY" > ~/.ssh/id_ed25519
+
+          chmod 600 ~/.ssh/id_ed25519
+
+          ssh-keyscan 192.168.0.180 >> ~/.ssh/known_hosts
+          ssh-keyscan 192.168.0.181 >> ~/.ssh/known_hosts
+          ssh-keyscan 192.168.0.182 >> ~/.ssh/known_hosts
+
+      - name: Deploy Infrastructure
+        run: |
+          ansible-playbook \
+            -i ansible/inventory/homelab.ini \
+            ansible/playbooks/cd-deploy.yml
