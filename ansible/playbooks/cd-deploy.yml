@@ -1,0 +1,6 @@
+---
+- name: Synchronize servers with main
+  import_playbook: git-sync.yml
+
+- name: Deploy reverse proxy configuration
+  import_playbook: deploy-nginx.yml
