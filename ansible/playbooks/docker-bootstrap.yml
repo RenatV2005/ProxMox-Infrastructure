@@ -1,0 +1,13 @@
+---
+- name: Docker Bootstrap Deploy
+  hosts: nonprod
+  become: true
+  gather_facts: false
+
+  tasks:
+
+    - name: Deploy Docker Compose Stacks
+      community.docker.docker_compose_v2:
+        project_src: "{{ item.path }}"
+        state: "{{ item.state }}"
+      loop: "{{ docker.stacks }}"

@@ -1,0 +1,16 @@
+---
+- name: Configure Docker Bind Mount Permissions
+  hosts: nonprod
+  become: true
+  gather_facts: false
+
+  tasks:
+
+    - name: Ensure Docker bind mount ownership
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        state: directory
+        recurse: true
+      loop: "{{ docker.users.bind_mounts }}"
