@@ -1,0 +1,37 @@
+name: CD - Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  deploy-prod:
+    name: CD - Deploy PROD
+    runs-on: ubuntu-latest
+
+    container:
+      image: ci-image:3.0
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          CD_SSH_KEY: ${{ secrets.CD_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          printf '%s\n' "$CD_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          ssh-keyscan 192.168.0.180 >> ~/.ssh/known_hosts
+
+      - name: Deploy PROD
+        run: |
+          ansible-playbook \
+            -i ansible/inventory/homelab.ini \
+            ansible/playbooks/deploy-nginx.yml \
+            --limit ubuntu-prod
