@@ -1,0 +1,31 @@
+---
+- name: Installiere Docker-Grundumgebung
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Aktualisiere die Paketliste
+      ansible.builtin.apt:
+        update_cache: true 
+
+    - name: stelle sicher, dass git installiert ist
+      ansible.builtin.apt:
+        name: git
+        state: present
+
+    - name: stelle sicher, dass docker installiert ist
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+
+    - name: stelle sicher, dass docker compose installiert ist
+      ansible.builtin.apt:
+        name: docker-compose-v2
+        state: present
+
+    - name: stelle sicher, dass docker gestartet und aktiviert ist
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
