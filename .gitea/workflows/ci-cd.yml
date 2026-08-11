@@ -34,18 +34,13 @@ jobs:
         run: |
           set -e
 
-          echo ""
           echo "===== Docker Compose Validation ====="
 
           find . -name "compose.yaml" | while read composefile
           do
             stackdir=$(dirname "$composefile")
 
-            echo ""
-            echo "======================================"
-            echo "Checking Stack:"
-            echo "$stackdir"
-            echo "======================================"
+            echo "Checking $stackdir"
 
             (
               cd "$stackdir"
@@ -55,14 +50,10 @@ jobs:
             echo "SUCCESS: $stackdir"
           done
 
-          echo ""
-          echo "All Docker Compose files are valid."
-
       - name: Validate Ansible Playbooks
         run: |
           set -e
 
-          echo ""
           echo "===== Ansible Playbook Validation ====="
 
           cd ansible/playbooks
@@ -77,16 +68,14 @@ jobs:
               "$playbook"
           done
 
-          echo ""
           echo "All Ansible Playbooks are valid."
 
-
   # ============================================================
-  # CD
+  # CD - DEV
   # ============================================================
 
-  deploy:
-    name: CD - Deploy Infrastructure
+  deploy-dev:
+    name: CD - Deploy DEV
     runs-on: ubuntu-latest
 
     needs:
@@ -110,15 +99,55 @@ jobs:
           chmod 700 ~/.ssh
 
           printf '%s\n' "$CD_SSH_KEY" > ~/.ssh/id_ed25519
-
           chmod 600 ~/.ssh/id_ed25519
 
           ssh-keyscan 192.168.0.180 >> ~/.ssh/known_hosts
           ssh-keyscan 192.168.0.181 >> ~/.ssh/known_hosts
           ssh-keyscan 192.168.0.182 >> ~/.ssh/known_hosts
 
-      - name: Deploy Infrastructure
+      - name: Deploy DEV
         run: |
           ansible-playbook \
             -i ansible/inventory/homelab.ini \
-            ansible/playbooks/cd-deploy.yml
+            ansible/playbooks/deploy-nginx.yml \
+            --limit ubuntu-dev
+
+# ============================================================
+# CD - TEST
+# ============================================================
+
+deploy-test:
+  name: CD - Deploy TEST
+  runs-on: ubuntu-latest
+
+  needs:
+    - deploy-dev
+
+  if: github.ref == 'refs/heads/main'
+
+  container:
+    image: ci-image:3.0
+
+  steps:
+
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Configure SSH
+      env:
+        CD_SSH_KEY: ${{ secrets.CD_SSH_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+
+        printf '%s\n' "$CD_SSH_KEY" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+
+        ssh-keyscan 192.168.0.181 >> ~/.ssh/known_hosts
+
+    - name: Deploy TEST
+      run: |
+        ansible-playbook \
+          -i ansible/inventory/homelab.ini \
+          ansible/playbooks/deploy-nginx.yml \
+          --limit ubuntu-test

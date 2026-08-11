@@ -1,0 +1,13 @@
+packages:
+
+  software:
+
+    apt:
+     - git
+     - docker.io 
+     - docker-compose-v2
+     - docker-buildx
+     - curl
+     - htop
+     - wget
+     - unzip
