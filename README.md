@@ -27,10 +27,10 @@ Dabei werden alle Komponenten zunächst manuell aufgebaut, verstanden, dokumenti
 | Self-hosted Gitea | ✅ |
 | Bash Automation | ✅ |
 | Backup & Restore | ✅ |
-| DEV Umgebung | 🔄 |
-| TEST Umgebung | 🔄 |
-| Ansible | 📅 |
-| CI/CD | 📅 |
+| DEV Umgebung |✅ |
+| TEST Umgebung | ✅ |
+| Ansible | ✅ |
+| CI/CD | 🔄 |
 | Terraform | 📅 |
 | Kubernetes | 📅 |
 
