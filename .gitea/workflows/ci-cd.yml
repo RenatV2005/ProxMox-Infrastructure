@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ci-image:3.0
+      image: ci-image:3.1
 
     steps:
 
@@ -69,6 +69,16 @@ jobs:
           done
 
           echo "All Ansible Playbooks are valid."
+
+      - name: Lint Ansible Playbooks
+        run: |
+          set -e
+
+          echo "===== Ansible Lint ====="
+
+          ansible-lint ansible/playbooks/
+
+          echo "All Ansible lint checks passed."    
 
   # ============================================================
   # CD - DEV

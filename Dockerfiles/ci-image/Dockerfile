@@ -2,6 +2,7 @@ FROM debian:trixie
 
 RUN apt-get update && apt-get install -y \
     git \
+    ansible-lint \
     nodejs \
     npm \
     ansible \
