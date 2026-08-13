@@ -1,0 +1,25 @@
+---
+- name: Start Homelab Virtual Machines
+  hosts: proxmox
+  become: false
+  gather_facts: false
+
+  vars:
+    proxmox_vms:
+      - vmid: 101
+        name: ubuntuServer
+      - vmid: 102
+        name: ubuntu-test
+      - vmid: 103
+        name: ubuntu-dev
+
+  tasks:
+    - name: Start selected virtual machines
+      ansible.builtin.command:
+        cmd: "qm start {{ item.vmid }}"
+      loop: "{{ proxmox_vms }}"
+      register: vm_start_result
+      changed_when: "'started' in vm_start_result.stdout"
+      failed_when:
+        - vm_start_result.rc != 0
+        - "'already running' not in vm_start_result.stderr"

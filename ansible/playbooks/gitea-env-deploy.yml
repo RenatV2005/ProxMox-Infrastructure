@@ -1,10 +1,11 @@
-- name: Deploy Gitea .env 
-  hosts: dev, test
+---
+- name: Deploy Gitea .env
+  hosts: nonprod
   become: false
-  
-  tasks:
 
+  tasks:
     - name: Deploy Gitea .env
-      template:
-        src: ../templates/gitea/.env.example.j2
+      ansible.builtin.template:
+        src: "{{ templates.gitea.path }}/.env.example.j2"
         dest: "{{ repository_path }}/git-platform/.env.example"
+        mode: "0600"

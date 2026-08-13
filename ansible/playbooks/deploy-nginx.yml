@@ -1,31 +1,36 @@
 ---
 - name: Deploy Nginx Reverse Proxy Configs
-  hosts: all
+  hosts: production
   become: false
 
   tasks:
 
     - name: Deploy Grafana Nginx Config
-      template:
-        src: ../templates/nginx/grafana.conf.j2
+      ansible.builtin.template:
+        src: "{{ templates.nginx.path }}/grafana.conf.j2"
         dest: "{{ repository_path }}/reverse-proxy/nginx-config/grafana.conf"
+        mode: "0644"
 
     - name: Deploy Gitea Nginx Config
-      template:
-        src: ../templates/nginx/gitea.conf.j2
+      ansible.builtin.template:
+        src: "{{ templates.nginx.path }}/gitea.conf.j2"
         dest: "{{ repository_path }}/reverse-proxy/nginx-config/gitea.conf"
+        mode: "0644"
 
     - name: Deploy Bookstack Nginx Config
-      template:
-        src: ../templates/nginx/bookstack.conf.j2
+      ansible.builtin.template:
+        src: "{{ templates.nginx.path }}/bookstack.conf.j2"
         dest: "{{ repository_path }}/reverse-proxy/nginx-config/bookstack.conf"
+        mode: "0644"
 
     - name: Deploy CAdvisor Nginx Config
-      template:
-        src: ../templates/nginx/cadvisor.conf.j2
+      ansible.builtin.template:
+        src: "{{ templates.path }}/cadvisor.conf.j2"
         dest: "{{ repository_path }}/reverse-proxy/nginx-config/cadvisor.conf"
+        mode: "0644"
 
     - name: Deploy Nginx Web Nginx Config
-      template:
-        src: ../templates/nginx/nginx-web-server.conf.j2
+      ansible.builtin.template:
+        src: "{{ templates.nginx.path }}/nginx-web-server.conf.j2"
         dest: "{{ repository_path }}/reverse-proxy/nginx-config/nginx-web-server.conf"
+        mode: "0644"

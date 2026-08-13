@@ -50,3 +50,9 @@ docker:
       - path: "{{ repository_path }}/monitoring-stack/prometheus-data"
         owner: "nobody"
         group: "nogroup"
+
+  templates:
+    nginx:
+      path: "{{ repository_path }}/ansible/templates/nginx"
+    gitea:
+      path: "{{ repository_path }}/ansible/templates/gitea"

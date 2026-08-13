@@ -1,13 +1,13 @@
 ---
 - name: Sicherstellen, dass die benötigten Pakete installiert sind
-  hosts: all
+  hosts: production
   become: true
   gather_facts: false
 
   tasks:
     - name: Aktualisiere die Paketliste
       ansible.builtin.apt:
-        update_cache: true 
+        update_cache: true
 
     - name: Apt Software Installieren
       ansible.builtin.apt:
@@ -15,7 +15,7 @@
         state: present
       loop: "{{ packages.software.apt }}"
 
-    - name: stelle sicher, dass docker gestartet und aktiviert ist
+    - name: Stelle sicher, dass docker gestartet und aktiviert ist
       ansible.builtin.service:
         name: docker
         state: started

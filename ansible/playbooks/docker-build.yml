@@ -6,7 +6,7 @@
   tasks:
     - name: Docker Images bauen
       community.docker.docker_image_build:
-        name: "{{ item.name }}:{{ item.tag }}"  
+        name: "{{ item.name }}:{{ item.tag }}"
         path: "{{ item.context }}"
         dockerfile: "{{ item.dockerfile }}"
         rebuild: "{{ item.rebuild | default('never') }}"
