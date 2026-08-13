@@ -4,6 +4,11 @@ git_branch: "main"
 
 repository_path: "documentation"
 
+controller_repository_path: "/home/renatdebianroot/documentation"
+
+allowed_local_changes:
+  - "reverse-proxy/nginx-config/"
+
 reverse_proxy:
 
   services:

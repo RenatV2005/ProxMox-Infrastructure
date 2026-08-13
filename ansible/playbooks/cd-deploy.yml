@@ -1,0 +1,6 @@
+---
+- name: Synchronize Servers With Main
+  ansible.builtin.import_playbook: git-sync.yml
+
+- name: Deploy Reverse Proxy Configuration
+  ansible.builtin.import_playbook: deploy-nginx.yml

@@ -2,6 +2,11 @@ name: CI/CD Infrastructure
 
 on:
   push:
+    branches:
+      - main
+      - feature/**
+      - hotfix/**
+      - fix/**
 
 jobs:
 
@@ -94,7 +99,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     container:
-      image: ci-image:3.0
+      image: ci-image:3.1
 
     steps:
 
@@ -111,16 +116,14 @@ jobs:
           printf '%s\n' "$CD_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-          ssh-keyscan 192.168.0.180 >> ~/.ssh/known_hosts
-          ssh-keyscan 192.168.0.181 >> ~/.ssh/known_hosts
           ssh-keyscan 192.168.0.182 >> ~/.ssh/known_hosts
 
       - name: Deploy DEV
         run: |
           ansible-playbook \
             -i ansible/inventory/homelab.ini \
-            ansible/playbooks/deploy-nginx.yml \
-            --limit ubuntu-dev
+            ansible/playbooks/cd-deploy.yml \
+            --limit dev
 
 # ============================================================
 # CD - TEST
@@ -136,7 +139,7 @@ deploy-test:
   if: ${{ github.ref == 'refs/heads/main' }}
 
   container:
-    image: ci-image:3.0
+    image: ci-image:3.1
 
   steps:
 
@@ -159,5 +162,5 @@ deploy-test:
       run: |
         ansible-playbook \
           -i ansible/inventory/homelab.ini \
-          ansible/playbooks/deploy-nginx.yml \
-          --limit ubuntu-test
+          ansible/playbooks/cd-deploy.yml \
+          --limit test

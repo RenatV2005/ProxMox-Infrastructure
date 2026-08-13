@@ -11,7 +11,7 @@ docker:
   images:
 
     - name: ci-image
-      tag: "3.0"
+      tag: "3.1"
       context: "{{ repository_path }}/Dockerfiles/ci-image"
       dockerfile: Dockerfile
       rebuild: always
@@ -53,6 +53,6 @@ docker:
 
   templates:
     nginx:
-      path: "{{ repository_path }}/ansible/templates/nginx"
+      path: "{{ controller_repository_path }}/ansible/templates/nginx"
     gitea:
-      path: "{{ repository_path }}/ansible/templates/gitea"
+      path: "{{ controller_repository_path }}/ansible/templates/gitea"

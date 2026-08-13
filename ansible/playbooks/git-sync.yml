@@ -1,0 +1,49 @@
+---
+- name: Synchronize Documentation Repository
+  hosts: production
+  become: false
+
+  tasks:
+    - name: Check repository status
+      ansible.builtin.command:
+        cmd: git -C "{{ ansible_env.HOME }}/{{ repository_path }}" status --porcelain
+      register: git_status
+      changed_when: false
+      # noqa: command-instead-of-module
+
+    - name: Detect unexpected local changes
+      ansible.builtin.set_fact:
+        unexpected_local_changes: >-
+          {{
+            git_status.stdout_lines
+            | reject('search', '^.. reverse-proxy/nginx-config/')
+            | list
+          }}
+
+    - name: Fail when repository contains unexpected local changes
+      ansible.builtin.fail:
+        msg: >-
+          Repository {{ ansible_env.HOME }}/{{ repository_path }}
+          contains unexpected local changes:
+          {{ unexpected_local_changes | join(', ') }}
+      when: unexpected_local_changes | length > 0
+
+    - name: Reset generated Nginx configuration files
+      ansible.builtin.command:
+        cmd: >-
+          git -C "{{ ansible_env.HOME }}/{{ repository_path }}"
+          checkout -- reverse-proxy/nginx-config/
+      changed_when: true
+      when: git_status.stdout_lines
+            | select('search', '^.. reverse-proxy/nginx-config/')
+            | list
+            | length > 0
+      # noqa: command-instead-of-module
+
+    - name: Synchronize repository with configured branch
+      ansible.builtin.git:
+        repo: "{{ git_repository }}"
+        dest: "{{ ansible_env.HOME }}/{{ repository_path }}"
+        version: "{{ git_branch }}"
+        update: true
+        force: false
