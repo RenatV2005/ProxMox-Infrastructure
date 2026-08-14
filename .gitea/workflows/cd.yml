@@ -3,10 +3,10 @@ name: CD - Deploy Environments
 on:
   workflow_run:
     workflows:
-      - CI - Validate Infrastructure
+      - CI - Infrastructure
     types:
       - completed
-      
+
 jobs:
   deploy-dev:
     name: CD - Deploy DEV
