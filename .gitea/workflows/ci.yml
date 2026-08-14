@@ -1,0 +1,78 @@
+name: CI - Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+      - feature/**
+      - hotfix/**
+      - fix/**
+
+jobs:
+  validate:
+    name: CI - Validate Infrastructure
+    runs-on: ubuntu-latest
+
+    container:
+      image: ci-image:3.1
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Show Environment
+        run: |
+          echo "===== Environment ====="
+          node --version
+          git --version
+          ansible-playbook --version
+          pwd
+          ls -la
+
+      - name: Validate Docker Compose Stacks
+        run: |
+          set -e
+
+          echo "===== Docker Compose Validation ====="
+
+          find . -name "compose.yaml" | while read composefile
+          do
+            stackdir=$(dirname "$composefile")
+
+            echo "Checking $stackdir"
+
+            (
+              cd "$stackdir"
+              docker compose config > /dev/null
+            )
+
+            echo "SUCCESS: $stackdir"
+          done
+
+      - name: Validate Ansible Playbooks
+        run: |
+          set -e
+
+          echo "===== Ansible Playbook Validation ====="
+
+          cd ansible/playbooks
+
+          for playbook in *.yml
+          do
+            echo "Checking $playbook"
+
+            ansible-playbook \
+              -i ../inventory/homelab.ini \
+              --syntax-check \
+              "$playbook"
+          done
+
+          echo "All Ansible Playbooks are valid."
+
+      - name: Lint Ansible Playbooks
+        run: |
+          set -e
+
+          ansible-lint ansible/playbooks/
+
+          echo "All Ansible lint checks passed."
