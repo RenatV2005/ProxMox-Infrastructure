@@ -1,7 +1,6 @@
 docker:
 
   networks:
-
     - name: reverse-proxy-net
       state: present
 
@@ -9,9 +8,8 @@ docker:
       state: present
 
   images:
-
     - name: ci-image
-      tag: "3.1"
+      tag: "3.0"
       context: "{{ repository_path }}/Dockerfiles/ci-image"
       dockerfile: Dockerfile
       rebuild: always
@@ -22,7 +20,6 @@ docker:
       dockerfile: Dockerfile
 
   stacks:
-
     - name: monitoring-stack
       path: "{{ repository_path }}/monitoring-stack"
       state: present
@@ -40,9 +37,7 @@ docker:
       state: present
 
   users:
-
     bind_mounts:
-
       - path: "{{ repository_path }}/monitoring-stack/grafana-data"
         owner: "472"
         group: "472"
@@ -50,9 +45,3 @@ docker:
       - path: "{{ repository_path }}/monitoring-stack/prometheus-data"
         owner: "nobody"
         group: "nogroup"
-
-  templates:
-    nginx:
-      path: "{{ controller_repository_path }}/ansible/templates/nginx"
-    gitea:
-      path: "{{ controller_repository_path }}/ansible/templates/gitea"
