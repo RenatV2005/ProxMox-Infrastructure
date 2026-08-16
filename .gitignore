@@ -127,3 +127,14 @@ __pycache__/
 
 Thumbs.db
 Desktop.ini
+
+# Terraform
+.terraform/
+
+# Sensitive variables
+terraform.tfvars
+*.tfvars
+
+# Terraform state
+*.tfstate
+*.tfstate.*
