@@ -1,0 +1,5 @@
+proxmox_endpoint  = "https://192.168.0.50:8006/api2/json"
+proxmox_api_token = "terraform@pve!terraform-token=34b742ca-98c7-462d-a933-0c1fc75f360c"
+vm_username       = "renatterraform"
+vm_password       = "koridor"
+vm_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDVNSu6JLartIjN8WV6nVN82bXvEKx9j3xnqf49tPVOF"

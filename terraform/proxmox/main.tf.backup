@@ -1,0 +1,35 @@
+resource "proxmox_virtual_environment_vm" "ubuntu_dev" {
+  name      = "ubuntu-dev-terraform"
+  node_name = "linuxvm"
+  vm_id     = 200
+
+  clone {
+    vm_id = 9000
+  }
+
+  cpu {
+    cores = 2
+  }
+
+  memory {
+    dedicated = 5120
+  }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "192.168.0.200/24"
+        gateway = "192.168.0.1"
+      }
+    }
+
+    user_account {
+      username = var.vm_username
+      password = var.vm_password
+
+      keys = [
+        var.vm_ssh_public_key
+      ]
+    }
+  }
+}
