@@ -1,71 +1,62 @@
-resource "proxmox_virtual_environment_vm" "ubuntu_dev" {
-  name      = var.vm_name
-  node_name = var.vm_node
-  vm_id     = var.vm_id
+resource "proxmox_virtual_environment_vm" "vm" {
+  for_each = var.vms
 
-  clone {
-    vm_id = var.template_id
-  }
+  name      = each.value.name
+  node_name = each.value.node_name
+  vm_id     = each.value.vm_id
+
+  on_boot       = each.value.on_boot
+  scsi_hardware = each.value.scsi_hardware
 
   cpu {
-    cores = var.vm_cores
+    cores = each.value.cores
+    type  = each.value.cpu_type
   }
 
   memory {
-    dedicated = var.vm_memory
+    dedicated = each.value.memory
   }
 
-  initialization {
-    ip_config {
-      ipv4 {
-        address = var.vm_ip
-        gateway = var.vm_gateway
+  dynamic "operating_system" {
+    for_each = each.value.operating_system != null ? [each.value.operating_system] : []
+
+    content {
+      type = operating_system.value
+    }
+  }
+
+  dynamic "clone" {
+    for_each = each.value.template_id != null ? [each.value.template_id] : []
+
+    content {
+      vm_id = clone.value
+    }
+  }
+
+  dynamic "initialization" {
+    for_each = (
+      each.value.ip != null &&
+      each.value.gateway != null &&
+      each.value.username != null &&
+      each.value.password != null
+    ) ? [1] : []
+
+    content {
+      ip_config {
+        ipv4 {
+          address = each.value.ip
+          gateway = each.value.gateway
+        }
       }
-    }
 
-    user_account {
-      username = var.vm_username
-      password = var.vm_password
+      user_account {
+        username = each.value.username
+        password = each.value.password
 
-      keys = [
-        var.vm_ssh_public_key
-      ]
-    }
-  }
-}
-
-resource "proxmox_virtual_environment_vm" "ubuntu_test" {
-  name      = var.vm_name2
-  node_name = var.vm_node2
-  vm_id     = var.vm_id2
-
-  clone {
-    vm_id = var.template_id2
-  }
-
-  cpu {
-    cores = var.vm_cores2
-  }
-
-  memory {
-    dedicated = var.vm_memory2
-  }
-
-  initialization {
-    ip_config {
-      ipv4 {
-        address = var.vm_ip2
-        gateway = var.vm_gateway2
+        keys = [
+          var.vm_ssh_public_key
+        ]
       }
-    }
-
-    user_account {
-      username = var.vm_username2
-      password = var.vm_password2
-
-      keys = [
-        var.vm_ssh_public_key
-      ]
     }
   }
 }
