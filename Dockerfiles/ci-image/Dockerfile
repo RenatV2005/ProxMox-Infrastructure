@@ -1,6 +1,7 @@
 FROM debian:trixie
 
 RUN apt-get update && apt-get install -y \
+    terraform \
     git \
     ansible-lint \
     nodejs \
