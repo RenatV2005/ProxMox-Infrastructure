@@ -15,6 +15,7 @@ git-platform/.env
 cicd-stack/.env
 cicd-stack/config.yaml
 cicd-stack/data/
+cicd-stack/.runner
 
 *.pem
 *.key
