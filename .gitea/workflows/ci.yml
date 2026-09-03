@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ci-image:3.1
+      image: ci-image:3.2
 
     steps:
       - name: Checkout Repository
@@ -76,3 +76,27 @@ jobs:
           ansible-lint ansible/playbooks/
 
           echo "All Ansible lint checks passed."
+
+      - name: Lint Docker Compose Files
+        run: |
+          set -e
+
+          echo "===== Docker Compose Linting ====="
+
+          find . -name "compose.yaml" | while read composefile
+          do
+            stackdir=$(dirname "$composefile")
+
+            echo "Linting $stackdir"
+
+            (
+              cd "$stackdir"
+              docker compose config > /dev/null
+            )
+
+            echo "SUCCESS: $stackdir"
+          done
+
+          echo "All Docker Compose files are valid."
+
+ 
