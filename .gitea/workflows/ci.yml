@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ci-image:3.2
+      image: ci-image:3.4
 
     steps:
       - name: Checkout Repository

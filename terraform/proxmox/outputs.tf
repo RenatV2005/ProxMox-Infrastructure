@@ -24,3 +24,12 @@ output "vm_mac_addresses" {
     key => vm.mac_addresses
   }
 }
+
+output "prod_name" {
+  value = data.proxmox_virtual_environment_vm.prod.name
+}
+
+output "prod_status" {
+  value = data.proxmox_virtual_environment_vm.prod.status
+}
+
