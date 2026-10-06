@@ -142,3 +142,6 @@ terraform.tfvars
 *-tfvars*
 *.tfstate
 *.tfstate.*
+# Terraform backups / temporary files
+**/*.backup
+**/*.before-*
