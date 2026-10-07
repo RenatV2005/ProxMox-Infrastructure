@@ -3,11 +3,22 @@ packages:
   software:
 
     apt:
-     - git
-     - docker.io 
-     - docker-compose-v2
-     - docker-buildx
-     - curl
-     - htop
-     - wget
-     - unzip
+      - git
+      - docker.io
+      - docker-compose-v2
+      - docker-buildx
+      - curl
+      - htop
+      - wget
+      - unzip
+
+  kubernetes:
+
+    apt:
+      - curl
+      - apt-transport-https
+      - ca-certificates
+      - kubectl
+      - kubelet
+      - kubeadm
+      - containerd

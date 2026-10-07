@@ -12,6 +12,14 @@
         name: ubuntu-test
       - vmid: 103
         name: ubuntu-dev
+      - vmid: 201
+        name: ubuntu-backend
+      - vmid: 300
+        name: k8s-control-01
+      - vmid: 301
+        name: k8s-control-01
+      - vmid: 302
+        name: k8s-control-02
 
   tasks:
     - name: Start selected virtual machines
