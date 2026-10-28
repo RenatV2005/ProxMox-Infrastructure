@@ -1,0 +1,9 @@
+templates:
+  gitea:
+    path: "gitea"
+
+  swap:
+    path: "swap"
+
+  nginx:
+    path: "nginx"

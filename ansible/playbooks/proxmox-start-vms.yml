@@ -8,18 +8,16 @@
     proxmox_vms:
       - vmid: 101
         name: ubuntuServer
-      - vmid: 102
-        name: ubuntu-test
-      - vmid: 103
-        name: ubuntu-dev
-      - vmid: 201
-        name: ubuntu-backend
       - vmid: 300
         name: k8s-control-01
       - vmid: 301
         name: k8s-control-01
       - vmid: 302
         name: k8s-control-02
+      - vmid: 311
+        name: database-01
+      - vmid: 310
+        name: application01
 
   tasks:
     - name: Start selected virtual machines
